@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="ru" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Умный Планер ДЗ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Flatpickr (Умный календарь) CSS & JS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Небольшая коррекция для Flatpickr под наш дизайн */
+      .flatpickr-calendar.dark {
+        background: #18181b;
+        border: 1px solid #27272a;
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+      }
+      .flatpickr-day.selected {
+        background: #4f46e5 !important;
+        border-color: #4f46e5 !important;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white"
+  >
+    <!-- Header -->
+    <header
+      class="border-b border-zinc-800/80 bg-zinc-900/50 backdrop-blur sticky top-0 z-40"
+    >
+      <div
+        class="max-w-4xl mx-auto px-4 py-3.5 flex justify-between items-center"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20"
+          >
+            У
+          </div>
+          <h1 class="text-lg font-semibold tracking-tight text-zinc-100">
+            Учебный планер
+          </h1>
+        </div>
+        <div
+          class="text-xs text-zinc-500 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800"
+        >
+          Учебный год 26/27
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-1 flex flex-col gap-6">
+      <!-- Navigation Tabs -->
+      <div
+        class="flex border-b border-zinc-800 gap-2 text-sm font-medium overflow-x-auto no-scrollbar"
+      >
+        <button
+          id="tab-btn-view"
+          onclick="switchTab('view')"
+          class="tab-button whitespace-nowrap py-2.5 px-4 text-indigo-400 border-b-2 border-indigo-500 transition"
+        >
+          👀 Просмотр
+        </button>
+        <button
+          id="tab-btn-add"
+          onclick="switchTab('add')"
+          class="tab-button whitespace-nowrap py-2.5 px-4 text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 transition"
+        >
+          ✍️ Добавить ДЗ
+        </button>
+        <button
+          id="tab-btn-schedule"
+          onclick="switchTab('schedule')"
+          class="tab-button whitespace-nowrap py-2.5 px-4 text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 transition"
+        >
+          ⚙️ Расписание
+        </button>
+      </div>
+
+      <!-- TAB 1: ПРОСМОТР -->
+      <section id="tab-view" class="tab-content flex flex-col gap-5">
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80"
+        >
+          <div>
+            <span
+              id="target-date-label"
+              class="text-xs uppercase font-semibold text-indigo-400 tracking-wider"
+              >Уроки на день</span
+            >
+            <h2
+              id="target-date-heading"
+              class="text-xl font-bold text-zinc-100 mt-0.5"
+            >
+              ...
+            </h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <input
+              type="text"
+              id="date-picker"
+              placeholder="Выбрать дату"
+              class="bg-zinc-800 border border-zinc-700 text-zinc-200 text-sm rounded-lg px-3 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center cursor-pointer"
+            />
+            <button
+              onclick="resetToTomorrow()"
+              class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 rounded-lg transition"
+            >
+              Сброс
+            </button>
+          </div>
+        </div>
+
+        <div id="tomorrow-lessons-container" class="space-y-3">
+          <div class="text-center py-12 text-zinc-500 text-sm">
+            Загрузка данных...
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: ДОБАВИТЬ ДЗ -->
+      <section id="tab-add" class="tab-content hidden flex-col gap-5">
+        <div
+          class="bg-zinc-900/60 p-5 rounded-xl border border-zinc-800/80 flex flex-col gap-5"
+        >
+          <h3 class="text-lg font-semibold text-zinc-100">
+            Новое домашнее задание
+          </h3>
+
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1.5"
+                >Предмет</label
+              >
+              <select
+                id="add-hw-subject"
+                onchange="calculateSmartDate()"
+                class="w-full bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition appearance-none cursor-pointer"
+              >
+                <option value="">Сначала заполните расписание...</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1.5"
+                >На какую дату задано?</label
+              >
+              <!-- Заменен на type="text" для Flatpickr -->
+              <input
+                type="text"
+                id="add-hw-date"
+                placeholder="Сначала выберите предмет..."
+                class="w-full bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer"
+              />
+              <p
+                id="smart-date-helper"
+                class="text-xs mt-1.5 font-medium text-indigo-400"
+              >
+                Выберите предмет, чтобы найти следующий урок.
+              </p>
+              <input type="hidden" id="add-hw-lesson-num" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1.5"
+                >Что нужно сделать?</label
+              >
+              <textarea
+                id="add-hw-task"
+                rows="3"
+                placeholder="Например: стр. 45, номера 3-5, выучить правило..."
+                class="w-full bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none"
+              ></textarea>
+            </div>
+
+            <div
+              id="add-hw-success"
+              class="hidden bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm px-4 py-3 rounded-lg"
+            >
+              ✅ Домашнее задание успешно добавлено!
+            </div>
+
+            <div class="flex justify-end mt-2">
+              <button
+                onclick="saveSmartHW()"
+                class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-6 py-2.5 rounded-lg transition shadow-lg shadow-indigo-600/20 w-full sm:w-auto"
+              >
+                Добавить в планер
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: РАСПИСАНИЕ -->
+      <section id="tab-schedule" class="tab-content hidden flex-col gap-5">
+        <div
+          class="flex flex-wrap gap-1.5 bg-zinc-900/60 p-1.5 rounded-xl border border-zinc-800/80"
+        >
+          <button
+            onclick="selectScheduleDay(1)"
+            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+          >
+            Пн
+          </button>
+          <button
+            onclick="selectScheduleDay(2)"
+            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+          >
+            Вт
+          </button>
+          <button
+            onclick="selectScheduleDay(3)"
+            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+          >
+            Ср
+          </button>
+          <button
+            onclick="selectScheduleDay(4)"
+            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+          >
+            Чт
+          </button>
+          <button
+            onclick="selectScheduleDay(5)"
+            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+          >
+            Пт
+          </button>
+        </div>
+
+        <form
+          id="schedule-form"
+          onsubmit="saveSchedule(event)"
+          class="bg-zinc-900/60 p-5 rounded-xl border border-zinc-800/80 flex flex-col gap-4"
+        >
+          <h3
+            id="selected-day-heading"
+            class="text-base font-semibold text-zinc-200"
+          >
+            Расписание на День
+          </h3>
+          <div
+            id="schedule-inputs-container"
+            class="grid grid-cols-1 md:grid-cols-2 gap-3"
+          ></div>
+          <div class="flex justify-end mt-2">
+            <button
+              type="submit"
+              class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition shadow-lg shadow-indigo-600/20"
+            >
+              Сохранить расписание
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script>
+      // ==========================================
+      // НАСТРОЙКИ SUPABASE
+      // ==========================================
+      const SUPABASE_URL = "https://gkikxswvmqyakaicrxyk.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdraWt4c3d2bXF5YWthaWNyeHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNjE4NTQsImV4cCI6MjEwMzkzNzg1NH0.bDhmQVe_81vCcW8iCx5G48-G4gJo0Wki-7rWtwI0YKA";
+      // ==========================================
+
+      const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const ACADEMIC_START = new Date(2026, 8, 1, 0, 0, 0); // 1 Сентября 2026
+      const ACADEMIC_END = new Date(2027, 4, 31, 23, 59, 59); // 31 Мая 2027
+
+      const DAYS = [
+        "Воскресенье",
+        "Понедельник",
+        "Вторник",
+        "Среда",
+        "Четверг",
+        "Пятница",
+        "Суббота",
+      ];
+      let selectedDayForSchedule = 1;
+      let targetTomorrowDate = null;
+      let globalSchedule = [];
+
+      // Переменные для хранения инстансов календаря Flatpickr
+      let fpView;
+      let fpAdd;
+
+      window.addEventListener("DOMContentLoaded", async () => {
+        initInputsForSchedule();
+
+        // Инициализация календаря для вкладки "Просмотр"
+        fpView = flatpickr("#date-picker", {
+          locale: "ru",
+          minDate: "2026-09-01",
+          maxDate: "2027-05-31",
+          disableMobile: true, // Выключаем родной календарь мобилок, чтобы работали наши ограничения
+          dateFormat: "Y-m-d",
+          onChange: function (selectedDates, dateStr) {
+            if (dateStr) onDateChange(dateStr);
+          },
+        });
+
+        // Инициализация умного календаря для вкладки "Добавить ДЗ"
+        fpAdd = flatpickr("#add-hw-date", {
+          locale: "ru",
+          minDate: "2026-09-01",
+          maxDate: "2027-05-31",
+          disableMobile: true,
+          dateFormat: "Y-m-d",
+          altInput: true, // Показывает красивую дату (напр. "5 сентября 2026")
+          altFormat: "j F Y",
+          enable: [], // По умолчанию всё заблокировано, пока не выберут предмет
+          onChange: function (selectedDates, dateStr) {
+            // Когда юзер кликает на дату вручную, вычисляем номер урока
+            if (selectedDates.length > 0) {
+              const d = selectedDates[0];
+              let dayOfWeek = d.getDay() === 0 ? 7 : d.getDay();
+              const subject = document.getElementById("add-hw-subject").value;
+
+              let lessonsThisDay = globalSchedule.filter(
+                (s) =>
+                  s.day_of_week === dayOfWeek && s.subject.trim() === subject,
+              );
+              if (lessonsThisDay.length > 0) {
+                lessonsThisDay.sort(
+                  (a, b) => a.lesson_number - b.lesson_number,
+                );
+                document.getElementById("add-hw-lesson-num").value =
+                  lessonsThisDay[0].lesson_number;
+              }
+            }
+          },
+        });
+
+        await fetchGlobalSchedule();
+        resetToTomorrow();
+      });
+
+      function getLocalDateString(dateObj) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const d = String(dateObj.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      }
+
+      function switchTab(tabId) {
+        document.querySelectorAll(".tab-content").forEach((el) => {
+          el.classList.add("hidden");
+          el.classList.remove("flex");
+        });
+        document.querySelectorAll(".tab-button").forEach((btn) => {
+          btn.className =
+            "tab-button whitespace-nowrap py-2.5 px-4 text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 transition";
+        });
+
+        document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+        document.getElementById(`tab-${tabId}`).classList.add("flex");
+        document.getElementById(`tab-btn-${tabId}`).className =
+          "tab-button whitespace-nowrap py-2.5 px-4 text-indigo-400 border-b-2 border-indigo-500 transition";
+
+        if (tabId === "view") loadTomorrowView();
+        if (tabId === "schedule") selectScheduleDay(selectedDayForSchedule);
+      }
+
+      async function fetchGlobalSchedule() {
+        const { data } = await db.from("schedule").select("*");
+        globalSchedule = data || [];
+        updateSubjectDropdown();
+      }
+
+      function updateSubjectDropdown() {
+        const select = document.getElementById("add-hw-subject");
+        const uniqueSubjects = [
+          ...new Set(
+            globalSchedule.map((s) => s.subject.trim()).filter((s) => s !== ""),
+          ),
+        ];
+
+        if (uniqueSubjects.length === 0) {
+          select.innerHTML =
+            '<option value="">Сначала заполните расписание!</option>';
+          return;
+        }
+        select.innerHTML =
+          '<option value="" disabled selected>Выберите предмет...</option>';
+        uniqueSubjects.sort().forEach((sub) => {
+          select.innerHTML += `<option value="${sub}">${sub}</option>`;
+        });
+      }
+
+      function calculateSmartDate() {
+        const subject = document.getElementById("add-hw-subject").value;
+        const helper = document.getElementById("smart-date-helper");
+        const lessonInput = document.getElementById("add-hw-lesson-num");
+
+        if (!subject) {
+          fpAdd.clear();
+          fpAdd.set("enable", []); // Блокируем весь календарь
+          return;
+        }
+
+        // 1. Ищем, по каким дням недели вообще бывает этот предмет
+        const daysWithSubject = globalSchedule
+          .filter((s) => s.subject.trim() === subject)
+          .map((s) => (s.day_of_week === 7 ? 0 : s.day_of_week)); // JS считает ВС = 0, наша БД = 7
+
+        const uniqueDays = [...new Set(daysWithSubject)];
+
+        // 2. Разрешаем кликать в календаре ТОЛЬКО на эти дни недели
+        fpAdd.set("enable", [
+          function (date) {
+            return uniqueDays.includes(date.getDay());
+          },
+        ]);
+
+        // 3. Автоматически ищем ближайший следующий урок
+        let d = new Date();
+        if (d < ACADEMIC_START) d = new Date(ACADEMIC_START);
+
+        let foundDate = null;
+        let foundLesson = null;
+
+        for (let i = 1; i <= 14; i++) {
+          d.setDate(d.getDate() + 1);
+          if (d > ACADEMIC_END) break;
+
+          let dayOfWeek = d.getDay() === 0 ? 7 : d.getDay();
+          let lessonsThisDay = globalSchedule.filter(
+            (s) => s.day_of_week === dayOfWeek && s.subject.trim() === subject,
+          );
+
+          if (lessonsThisDay.length > 0) {
+            foundDate = new Date(d);
+            lessonsThisDay.sort((a, b) => a.lesson_number - b.lesson_number);
+            foundLesson = lessonsThisDay[0].lesson_number;
+            break;
+          }
+        }
+
+        if (foundDate) {
+          // Ставим дату в календарь (true = запустить onChange, чтобы проставился lesson_number)
+          fpAdd.setDate(foundDate, true);
+          const options = { day: "numeric", month: "long" };
+          helper.innerHTML = `✨ Следующий урок: <b>${foundDate.toLocaleDateString("ru-RU", options)} (${DAYS[foundDate.getDay()]})</b>`;
+          helper.className = "text-xs mt-1.5 font-medium text-emerald-400";
+        } else {
+          fpAdd.clear();
+          lessonInput.value = "";
+          helper.innerHTML = `⚠️ В ближайшие 2 недели этого урока нет. Выберите дату вручную.`;
+          helper.className = "text-xs mt-1.5 font-medium text-amber-400";
+        }
+      }
+
+      async function saveSmartHW() {
+        const subject = document.getElementById("add-hw-subject").value;
+        const dateStr = document.getElementById("add-hw-date").value;
+        const task = document.getElementById("add-hw-task").value.trim();
+        const lessonNum = document.getElementById("add-hw-lesson-num").value;
+
+        if (!subject) return alert("Выберите предмет!");
+        if (!dateStr) return alert("Укажите дату!");
+        if (!task) return alert("Напишите задание!");
+
+        const selectedDate = new Date(dateStr);
+        if (selectedDate < ACADEMIC_START || selectedDate > ACADEMIC_END) {
+          return alert("Дата должна быть в пределах учебного года 2026/2027!");
+        }
+
+        const { error } = await db.from("homework").insert([
+          {
+            due_date: dateStr,
+            lesson_number: lessonNum ? parseInt(lessonNum) : null,
+            subject: subject,
+            task: task,
+            is_completed: false,
+          },
+        ]);
+
+        if (error) {
+          alert("Ошибка: " + error.message);
+        } else {
+          const successMsg = document.getElementById("add-hw-success");
+          successMsg.classList.remove("hidden");
+
+          // Очистка формы
+          document.getElementById("add-hw-task").value = "";
+          document.getElementById("add-hw-subject").selectedIndex = 0;
+          fpAdd.clear();
+          fpAdd.set("enable", []); // Снова блокируем календарь
+
+          document.getElementById("smart-date-helper").innerText =
+            "Выберите предмет, чтобы найти следующий урок.";
+          document.getElementById("smart-date-helper").className =
+            "text-xs mt-1.5 font-medium text-indigo-400";
+          setTimeout(() => {
+            successMsg.classList.add("hidden");
+          }, 3000);
+        }
+      }
+
+      // --- ЛОГИКА ПРОСМОТРА ---
+      function resetToTomorrow() {
+        let date = new Date();
+        date.setDate(date.getDate() + 1);
+
+        if (date.getDay() === 6) date.setDate(date.getDate() + 2);
+        else if (date.getDay() === 0) date.setDate(date.getDate() + 1);
+
+        if (date.getTime() < ACADEMIC_START.getTime())
+          date = new Date(ACADEMIC_START);
+        if (date.getTime() > ACADEMIC_END.getTime())
+          date = new Date(ACADEMIC_END);
+
+        targetTomorrowDate = date;
+        fpView.setDate(date, false); // Обновляем календарь без вызова onChange
+        loadTomorrowView();
+      }
+
+      function onDateChange(val) {
+        const [y, m, d] = val.split("-").map(Number);
+        targetTomorrowDate = new Date(y, m - 1, d);
+        loadTomorrowView();
+      }
+
+      async function loadTomorrowView() {
+        if (!targetTomorrowDate) return;
+        const container = document.getElementById("tomorrow-lessons-container");
+        const dateStr = getLocalDateString(targetTomorrowDate);
+        const jsDay = targetTomorrowDate.getDay();
+        const dbDayOfWeek = jsDay === 0 ? 7 : jsDay;
+
+        document.getElementById("target-date-heading").textContent =
+          targetTomorrowDate.toLocaleDateString("ru-RU", {
+            month: "long",
+            day: "numeric",
+            weekday: "long",
+          });
+
+        const { data: homeworkList } = await db
+          .from("homework")
+          .select("*")
+          .eq("due_date", dateStr);
+
+        const scheduleMap = {};
+        globalSchedule
+          .filter((s) => s.day_of_week === dbDayOfWeek)
+          .forEach((s) => {
+            scheduleMap[s.lesson_number] = s.subject;
+          });
+
+        const hasAnyLessons = Object.values(scheduleMap).some(
+          (sub) => sub.trim() !== "",
+        );
+        container.innerHTML = "";
+
+        if (dbDayOfWeek > 5) {
+          container.innerHTML = `<div class="p-8 text-center bg-zinc-900/40 rounded-xl border border-zinc-800/60"><p class="text-zinc-400 text-sm">В выходные мы не учимся 😎</p></div>`;
+          return;
+        }
+
+        if (!hasAnyLessons) {
+          container.innerHTML = `<div class="p-8 text-center bg-zinc-900/40 rounded-xl border border-zinc-800/60"><p class="text-zinc-400 text-sm">На этот день расписание не заполнено.</p></div>`;
+          return;
+        }
+
+        for (let i = 1; i <= 9; i++) {
+          const subject = scheduleMap[i] || "";
+          if (!subject) continue;
+
+          const hwForLesson = (homeworkList || []).filter(
+            (h) =>
+              h.lesson_number === i ||
+              (h.subject === subject && !h.lesson_number),
+          );
+
+          let hwHTML = "";
+          if (hwForLesson.length > 0) {
+            hwHTML = hwForLesson
+              .map(
+                (hw) => `
+                        <div class="flex items-start justify-between gap-3 bg-zinc-800/50 p-3 rounded-lg border border-zinc-700/50 mt-2">
+                            <label class="flex items-start gap-3 cursor-pointer flex-1 min-w-0">
+                                <input type="checkbox" ${hw.is_completed ? "checked" : ""} onchange="toggleHW('${hw.id}', this.checked)" 
+                                    class="mt-1 w-4 h-4 rounded border-zinc-700 text-indigo-600 focus:ring-indigo-500 bg-zinc-900">
+                                <span class="text-sm ${hw.is_completed ? "line-through text-zinc-500" : "text-zinc-200"} break-words leading-relaxed">
+                                    ${escapeHtml(hw.task)}
+                                </span>
+                            </label>
+                            <button onclick="deleteHW('${hw.id}')" class="text-zinc-500 hover:text-rose-400 text-xs px-2 py-1 transition">✕</button>
+                        </div>
+                    `,
+              )
+              .join("");
+          } else {
+            hwHTML = `<p class="text-xs text-zinc-500 italic mt-2">Заданий нет</p>`;
+          }
+
+          container.innerHTML += `
+                    <div class="bg-zinc-900/80 rounded-xl border border-zinc-800 p-4 transition hover:border-zinc-700/80">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-md bg-zinc-800 border border-zinc-700/60 text-xs font-bold text-zinc-400 flex items-center justify-center">${i}</span>
+                            <h3 class="text-base font-semibold text-zinc-100">${escapeHtml(subject)}</h3>
+                        </div>
+                        <div class="mt-2 ml-10 space-y-1">${hwHTML}</div>
+                    </div>
+                `;
+        }
+      }
+
+      async function toggleHW(id, isCompleted) {
+        await db
+          .from("homework")
+          .update({ is_completed: isCompleted })
+          .eq("id", id);
+        loadTomorrowView();
+      }
+      async function deleteHW(id) {
+        await db.from("homework").delete().eq("id", id);
+        loadTomorrowView();
+      }
+
+      // --- ЛОГИКА РАСПИСАНИЯ ---
+      function initInputsForSchedule() {
+        const container = document.getElementById("schedule-inputs-container");
+        container.innerHTML = "";
+        for (let i = 1; i <= 9; i++) {
+          container.innerHTML += `
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 text-right text-xs font-bold text-zinc-500">${i}.</span>
+                        <input type="text" id="sched-input-${i}" placeholder="Предмет" class="w-full bg-zinc-800/80 border border-zinc-700/70 text-zinc-100 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    </div>`;
+        }
+      }
+
+      function selectScheduleDay(dayNum) {
+        selectedDayForSchedule = dayNum;
+        document.querySelectorAll(".day-tab-btn").forEach((btn, idx) => {
+          btn.className =
+            idx + 1 === dayNum
+              ? "day-tab-btn flex-1 py-2 px-3 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition"
+              : "day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition";
+        });
+        document.getElementById("selected-day-heading").textContent =
+          `Расписание на ${DAYS[dayNum]}`;
+        for (let i = 1; i <= 9; i++)
+          document.getElementById(`sched-input-${i}`).value = "";
+
+        const dataThisDay = globalSchedule.filter(
+          (s) => s.day_of_week === dayNum,
+        );
+        dataThisDay.forEach((item) => {
+          const input = document.getElementById(
+            `sched-input-${item.lesson_number}`,
+          );
+          if (input) input.value = item.subject || "";
+        });
+      }
+
+      async function saveSchedule(e) {
+        e.preventDefault();
+        const payload = [];
+        for (let i = 1; i <= 9; i++) {
+          payload.push({
+            day_of_week: selectedDayForSchedule,
+            lesson_number: i,
+            subject: document.getElementById(`sched-input-${i}`).value.trim(),
+          });
+        }
+        const { error } = await db
+          .from("schedule")
+          .upsert(payload, { onConflict: "day_of_week,lesson_number" });
+        if (error) alert("Ошибка: " + error.message);
+        else {
+          alert("Расписание сохранено!");
+          await fetchGlobalSchedule();
+        }
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+    </script>
+  </body>
+</html>
