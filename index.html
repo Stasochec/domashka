@@ -140,7 +140,7 @@
       @keyframes fastTabFade {
         from {
           opacity: 0;
-          transform: translate3d(0, 6px, 0);
+          transform: translate3d(0, 5px, 0);
         }
         to {
           opacity: 1;
@@ -156,17 +156,17 @@
       /* ПЛАВНЫЙ ВХОД И ВЫХОД ПЛАШЕК-УВЕДОМЛЕНИЙ */
       .smooth-banner {
         transition:
-          opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-          max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-          padding 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-          margin 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+          max-height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+          padding 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+          margin 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         overflow: hidden;
         will-change: opacity, transform, max-height;
       }
       .smooth-banner.banner-hidden {
         opacity: 0;
-        transform: scale(0.96) translate3d(0, -8px, 0);
+        transform: scale(0.97) translate3d(0, -6px, 0);
         max-height: 0 !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
@@ -178,32 +178,32 @@
       .smooth-banner.banner-visible {
         opacity: 1;
         transform: scale(1) translate3d(0, 0, 0);
-        max-height: 120px;
+        max-height: 100px;
         pointer-events: auto;
       }
 
-      /* КРУПНЫЙ ВЫКАТЫВАЮЩИЙСЯ СПИСОК */
+      /* ВЫКАТЫВАЮЩИЙСЯ СПИСОК */
       .custom-dropdown-rollout {
         max-height: 0;
         opacity: 0;
-        transform: scaleY(0.96) translate3d(0, -6px, 0);
+        transform: scaleY(0.96) translate3d(0, -5px, 0);
         transform-origin: top;
         transition:
-          max-height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-          opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+          max-height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         overflow: hidden;
         pointer-events: none;
       }
       .custom-dropdown-rollout.open {
-        max-height: 440px;
+        max-height: 320px;
         opacity: 1;
         transform: scaleY(1) translate3d(0, 0, 0);
         pointer-events: auto;
       }
 
       .chevron-flip {
-        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       }
       .chevron-flip.flipped {
         transform: rotate(180deg);
@@ -217,7 +217,7 @@
       @keyframes slideMonthRight {
         from {
           opacity: 0.15;
-          transform: translate3d(36px, 0, 0);
+          transform: translate3d(30px, 0, 0);
         }
         to {
           opacity: 1;
@@ -227,7 +227,7 @@
       @keyframes slideMonthLeft {
         from {
           opacity: 0.15;
-          transform: translate3d(-36px, 0, 0);
+          transform: translate3d(-30px, 0, 0);
         }
         to {
           opacity: 1;
@@ -235,11 +235,11 @@
         }
       }
       .slide-month-right {
-        animation: slideMonthRight 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: slideMonthRight 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         will-change: transform, opacity;
       }
       .slide-month-left {
-        animation: slideMonthLeft 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: slideMonthLeft 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         will-change: transform, opacity;
       }
 
@@ -247,7 +247,7 @@
       @keyframes slideRightClean {
         from {
           opacity: 0.3;
-          transform: translate3d(16px, 0, 0);
+          transform: translate3d(14px, 0, 0);
         }
         to {
           opacity: 1;
@@ -255,13 +255,13 @@
         }
       }
       .slide-right {
-        animation: slideRightClean 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: slideRightClean 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
       @keyframes slideLeftClean {
         from {
           opacity: 0.3;
-          transform: translate3d(-16px, 0, 0);
+          transform: translate3d(-14px, 0, 0);
         }
         to {
           opacity: 1;
@@ -269,13 +269,14 @@
         }
       }
       .slide-left {
-        animation: slideLeftClean 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: slideLeftClean 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
+      /* Модалка */
       @keyframes modalPop {
         from {
           opacity: 0;
-          transform: scale(0.96) translate3d(0, 8px, 0);
+          transform: scale(0.96) translate3d(0, 6px, 0);
         }
         to {
           opacity: 1;
@@ -283,7 +284,7 @@
         }
       }
       .animate-modal {
-        animation: modalPop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: modalPop 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
       @keyframes shakeError {
@@ -292,14 +293,14 @@
           transform: translate3d(0, 0, 0);
         }
         25% {
-          transform: translate3d(-6px, 0, 0);
+          transform: translate3d(-5px, 0, 0);
         }
         75% {
-          transform: translate3d(6px, 0, 0);
+          transform: translate3d(5px, 0, 0);
         }
       }
       .animate-shake {
-        animation: shakeError 0.25s ease-in-out;
+        animation: shakeError 0.22s ease-in-out;
       }
 
       .no-scrollbar::-webkit-scrollbar {
@@ -310,31 +311,25 @@
         scrollbar-width: none;
       }
 
-      /* ИСПРАВЛЕННАЯ ШИРИНА И СТИЛИЗАЦИЯ FLATPICKR (ВОСКРЕСЕНЬЕ НЕ ОБРЕЗАЕТСЯ) */
+      /* ТОЧНАЯ ШИРИНА И СТИЛИЗАЦИЯ FLATPICKR (ВОСКРЕСЕНЬЕ НЕ ОБРЕЗАЕТСЯ) */
       .flatpickr-calendar {
         background: var(--bg-surface) !important;
         border: 1px solid var(--border-color) !important;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
-        border-radius: 24px !important;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55) !important;
+        border-radius: 20px !important;
         font-family: "Inter", sans-serif !important;
-        width: 326px !important; /* Исправление: полная ширина для всех 7 дней */
+        width: 326px !important;
         max-width: 95vw !important;
         box-sizing: border-box !important;
-        padding: 8px 8px 12px 8px !important;
+        padding: 6px 6px 10px 6px !important;
       }
       .flatpickr-innerContainer {
         width: 100% !important;
         display: flex !important;
         justify-content: center !important;
       }
-      .flatpickr-rContainer {
-        width: 308px !important;
-        max-width: 100% !important;
-      }
-      .flatpickr-weekdays {
-        width: 308px !important;
-        max-width: 100% !important;
-      }
+      .flatpickr-rContainer,
+      .flatpickr-weekdays,
       .flatpickr-days {
         width: 308px !important;
         max-width: 100% !important;
@@ -344,10 +339,9 @@
         min-width: 308px !important;
         max-width: 308px !important;
       }
-
       .flatpickr-months {
         border-bottom: 1px solid var(--border-color) !important;
-        padding-bottom: 8px !important;
+        padding-bottom: 6px !important;
       }
       .flatpickr-months .flatpickr-month,
       .flatpickr-current-month,
@@ -355,7 +349,7 @@
       .flatpickr-current-month input.cur-year {
         color: var(--text-main) !important;
         font-weight: 800 !important;
-        font-size: 16px !important;
+        font-size: 15px !important;
         fill: var(--text-main) !important;
       }
       .flatpickr-current-month .flatpickr-monthDropdown-months {
@@ -372,31 +366,29 @@
       .flatpickr-months .flatpickr-next-month {
         color: var(--text-main) !important;
         fill: var(--text-main) !important;
-        padding: 6px !important;
+        padding: 4px !important;
       }
       .flatpickr-months .flatpickr-prev-month svg,
       .flatpickr-months .flatpickr-next-month svg {
         fill: var(--text-main) !important;
         color: var(--text-main) !important;
       }
-
-      /* Будни в заголовке */
       span.flatpickr-weekday {
         color: var(--text-muted) !important;
         font-weight: 700 !important;
-        font-size: 13px !important;
+        font-size: 12px !important;
       }
-      /* ВЫХОДНЫЕ (Сб, Вс) В ЗАГОЛОВКЕ: Серые */
       span.flatpickr-weekday:nth-child(6),
       span.flatpickr-weekday:nth-child(7) {
         color: #52525b !important;
-        opacity: 0.6 !important;
+        opacity: 0.55 !important;
       }
-
       .flatpickr-day {
         color: var(--text-main) !important;
-        border-radius: 14px !important;
+        border-radius: 12px !important;
         font-weight: 600 !important;
+        height: 38px !important;
+        line-height: 38px !important;
       }
       .flatpickr-day.today {
         border-color: var(--accent) !important;
@@ -406,15 +398,11 @@
         border-color: var(--accent) !important;
         color: #ffffff !important;
       }
-
-      /* ВЫХОДНЫЕ (Сб, Вс) В СЕТКЕ: затемненные и серые */
       .dayContainer .flatpickr-day:nth-child(7n-1),
       .dayContainer .flatpickr-day:nth-child(7n) {
         color: #52525b !important;
         opacity: 0.35 !important;
       }
-
-      /* ОТКЛЮЧЕННЫЕ ДНИ (включая заблокированные выходные) */
       .flatpickr-day.flatpickr-disabled,
       .flatpickr-day.flatpickr-disabled:hover {
         color: #3f3f46 !important;
@@ -434,14 +422,14 @@
     >
       <div
         id="auth-box"
-        class="ui-surface p-7 sm:p-8 rounded-3xl w-full max-w-xs flex flex-col items-center gap-5 text-center shadow-2xl"
+        class="ui-surface p-6 sm:p-7 rounded-2xl w-full max-w-xs flex flex-col items-center gap-4 text-center shadow-2xl"
       >
         <div
           id="lock-icon"
-          class="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg ui-accent-bg"
+          class="w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg ui-accent-bg"
         >
           <svg
-            class="w-7 h-7"
+            class="w-6 h-6"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -452,26 +440,28 @@
           </svg>
         </div>
         <div>
-          <h2 class="text-xl font-extrabold tracking-tight">Вход в планер</h2>
-          <p class="text-xs ui-text-muted mt-1">Введите PIN для авторизации</p>
+          <h2 class="text-lg font-extrabold tracking-tight">Вход в планер</h2>
+          <p class="text-xs ui-text-muted mt-0.5">
+            Введите PIN для авторизации
+          </p>
         </div>
         <form
           onsubmit="checkPassword(event)"
-          class="w-full flex flex-col gap-3.5"
+          class="w-full flex flex-col gap-3"
         >
           <input
             type="password"
             id="password-input"
             maxlength="8"
             placeholder="••••"
-            class="ui-surface-elevated font-mono-custom w-full border ui-border text-center text-2xl tracking-[0.4em] py-3.5 px-4 rounded-xl focus:outline-none text-current"
+            class="ui-surface-elevated font-mono-custom w-full border ui-border text-center text-xl tracking-[0.35em] py-2.5 px-3.5 rounded-xl focus:outline-none text-current"
           />
           <p id="auth-error" class="text-xs text-rose-500 font-semibold hidden">
             Неверный PIN-код!
           </p>
           <button
             type="submit"
-            class="w-full py-3.5 px-4 ui-accent-bg text-white text-sm font-bold rounded-xl transition shadow-lg active:scale-95"
+            class="w-full py-2.5 px-3 ui-accent-bg text-white text-xs sm:text-sm font-bold rounded-xl transition shadow-md active:scale-95"
           >
             Войти
           </button>
@@ -482,17 +472,21 @@
     <!-- МОДАЛЬНОЕ ОКНО: ЗАМЕНЫ НА ДЕНЬ -->
     <div
       id="override-modal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden"
+      class="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/80 backdrop-blur-sm hidden"
     >
       <div
         id="override-modal-box"
-        class="ui-surface p-5 sm:p-6 rounded-3xl w-full max-w-lg flex flex-col gap-4 shadow-2xl max-h-[90vh] overflow-hidden animate-modal"
+        class="ui-surface p-4 sm:p-5 rounded-2xl w-full max-w-lg flex flex-col gap-3.5 shadow-2xl max-h-[88vh] overflow-hidden animate-modal"
       >
-        <div class="flex items-center justify-between border-b ui-border pb-3">
+        <div
+          class="flex items-center justify-between border-b ui-border pb-2.5"
+        >
           <div>
-            <h3 class="text-base sm:text-lg font-bold flex items-center gap-2">
+            <h3
+              class="text-sm sm:text-base font-bold flex items-center gap-1.5"
+            >
               <svg
-                class="w-5 h-5 ui-accent-text"
+                class="w-4 h-4 ui-accent-text"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -512,7 +506,7 @@
           </div>
           <button
             onclick="closeOverrideModal()"
-            class="p-2 rounded-xl ui-surface-elevated hover:opacity-80 active:scale-95 transition text-xs"
+            class="p-1.5 rounded-lg ui-surface-elevated hover:opacity-80 active:scale-95 transition text-xs"
           >
             <svg
               class="w-4 h-4"
@@ -534,7 +528,7 @@
 
         <div
           id="override-inputs-list"
-          class="space-y-2 overflow-y-auto pr-1 flex-1 max-h-[50vh]"
+          class="space-y-1.5 overflow-y-auto pr-1 flex-1 max-h-[46vh]"
         ></div>
 
         <div
@@ -543,7 +537,7 @@
           <button
             onclick="resetDayOverrides()"
             type="button"
-            class="w-full sm:w-auto text-xs font-semibold px-4 py-2.5 rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 active:scale-95 transition"
+            class="w-full sm:w-auto text-xs font-semibold px-3 py-2 rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 active:scale-95 transition"
           >
             Сбросить к обычному
           </button>
@@ -551,14 +545,14 @@
             <button
               onclick="closeOverrideModal()"
               type="button"
-              class="flex-1 sm:flex-none text-xs font-semibold px-4 py-2.5 rounded-xl ui-surface-elevated hover:opacity-80 active:scale-95 transition"
+              class="flex-1 sm:flex-none text-xs font-semibold px-3.5 py-2 rounded-xl ui-surface-elevated hover:opacity-80 active:scale-95 transition"
             >
               Отмена
             </button>
             <button
               onclick="saveDayOverrides()"
               type="button"
-              class="flex-1 sm:flex-none text-xs font-bold px-5 py-2.5 rounded-xl ui-accent-bg text-white hover:opacity-90 active:scale-95 transition"
+              class="flex-1 sm:flex-none text-xs font-bold px-4 py-2 rounded-xl ui-accent-bg text-white hover:opacity-90 active:scale-95 transition"
             >
               Сохранить замены
             </button>
@@ -567,21 +561,21 @@
       </div>
     </div>
 
-    <!-- ШАПКА -->
+    <!-- ШАПКА (КОМПАКТНАЯ) -->
     <header
       class="sticky top-0 z-40 backdrop-blur-md border-b ui-border bg-opacity-80"
       style="background-color: var(--bg-base)"
     >
       <div
-        class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex justify-between items-center"
-        style="padding-top: calc(12px + env(safe-area-inset-top))"
+        class="max-w-5xl mx-auto px-4 sm:px-6 py-2 sm:py-2.5 flex justify-between items-center"
+        style="padding-top: calc(8px + env(safe-area-inset-top))"
       >
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2.5">
           <div
-            class="w-9 h-9 rounded-xl ui-accent-bg flex items-center justify-center font-black text-white text-base shadow-md"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg ui-accent-bg flex items-center justify-center font-black text-white text-sm shadow-sm"
           >
             <svg
-              class="w-5 h-5"
+              class="w-4 h-4"
               fill="none"
               stroke="currentColor"
               stroke-width="2.2"
@@ -594,17 +588,19 @@
               <path d="M6 10h10" />
             </svg>
           </div>
-          <h1 class="text-lg font-bold tracking-tight">Учебный планер</h1>
+          <h1 class="text-sm sm:text-base font-bold tracking-tight">
+            Учебный планер
+          </h1>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5">
           <button
             onclick="cycleTheme()"
             title="Сменить тему"
-            class="ui-surface px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 hover:opacity-80 active:scale-95 transition"
+            class="ui-surface px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 hover:opacity-80 active:scale-95 transition"
           >
             <svg
-              class="w-4 h-4 ui-accent-text"
+              class="w-3.5 h-3.5 ui-accent-text"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -623,10 +619,10 @@
           <button
             onclick="logout()"
             title="Выйти"
-            class="ui-surface p-2 rounded-xl text-xs ui-text-muted hover:text-rose-500 active:scale-90 transition"
+            class="ui-surface p-1.5 rounded-lg text-xs ui-text-muted hover:text-rose-500 active:scale-90 transition"
           >
             <svg
-              class="w-4 h-4"
+              class="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -649,10 +645,10 @@
           <button
             id="tab-btn-view"
             onclick="switchTab('view', this)"
-            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+            class="tab-button flex-1 text-center py-2 sm:py-2.5 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
           >
             <svg
-              class="w-4 h-4"
+              class="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -669,10 +665,10 @@
           <button
             id="tab-btn-add"
             onclick="switchTab('add', this)"
-            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+            class="tab-button flex-1 text-center py-2 sm:py-2.5 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
           >
             <svg
-              class="w-4 h-4"
+              class="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -687,10 +683,10 @@
           <button
             id="tab-btn-full-week"
             onclick="switchTab('full-week', this)"
-            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+            class="tab-button flex-1 text-center py-2 sm:py-2.5 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
           >
             <svg
-              class="w-4 h-4"
+              class="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -706,10 +702,10 @@
           <button
             id="tab-btn-schedule"
             onclick="switchTab('schedule', this)"
-            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+            class="tab-button flex-1 text-center py-2 sm:py-2.5 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
           >
             <svg
-              class="w-4 h-4"
+              class="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -724,25 +720,25 @@
           </button>
           <div
             id="tab-indicator"
-            class="absolute bottom-0 h-1 rounded-t-full"
+            class="absolute bottom-0 h-0.5 rounded-t-full"
           ></div>
         </nav>
       </div>
     </header>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <!-- ОСНОВНОЙ КОНТЕНТ (КОМПАКТНЫЙ) -->
     <main
-      class="max-w-5xl mx-auto px-4 sm:px-6 py-5 w-full flex-1 flex flex-col gap-5 select-text overflow-hidden"
+      class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 w-full flex-1 flex flex-col gap-3 select-text overflow-hidden"
     >
       <!-- TAB 1: ПРОСМОТР УРОКОВ & ДЗ -->
-      <section id="tab-view" class="tab-content flex flex-col gap-4">
+      <section id="tab-view" class="tab-content flex flex-col gap-2.5">
         <!-- Баннер автопереноса -->
         <div
           id="reschedule-banner"
-          class="smooth-banner banner-hidden p-4 rounded-3xl bg-amber-500/15 border border-amber-500/30 flex items-start gap-3.5"
+          class="smooth-banner banner-hidden p-3 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-start gap-2.5"
         >
           <svg
-            class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5"
+            class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -754,7 +750,7 @@
             <line x1="12" y1="9" x2="12" y2="13" />
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
-          <div class="text-xs sm:text-sm text-amber-200">
+          <div class="text-xs text-amber-200">
             <span class="font-bold">Урок отменен или заменен:</span>
             <span id="reschedule-banner-text"></span>
           </div>
@@ -762,15 +758,15 @@
 
         <!-- Панель управления днем -->
         <div
-          class="ui-surface p-4 sm:p-5 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
+          class="ui-surface p-3 sm:p-3.5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm"
         >
-          <div class="flex items-center justify-between sm:justify-start gap-3">
+          <div class="flex items-center justify-between sm:justify-start gap-2">
             <button
               onclick="shiftDay(-1)"
-              class="w-10 h-10 rounded-2xl ui-surface-elevated flex items-center justify-center hover:opacity-80 active:scale-90 transition"
+              class="w-8 h-8 rounded-xl ui-surface-elevated flex items-center justify-center hover:opacity-80 active:scale-90 transition"
             >
               <svg
-                class="w-5 h-5"
+                class="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2.5"
@@ -783,29 +779,26 @@
               <div class="flex items-center gap-2">
                 <h2
                   id="target-date-heading"
-                  class="text-lg sm:text-xl font-extrabold capitalize"
+                  class="text-sm sm:text-base font-extrabold capitalize"
                 >
                   ...
                 </h2>
                 <span
                   id="target-is-today-badge"
-                  class="hidden text-xs font-bold px-2 py-0.5 rounded-md ui-accent-bg text-white"
+                  class="hidden text-[10px] font-bold px-1.5 py-0.5 rounded-md ui-accent-bg text-white"
                   >Завтра</span
                 >
               </div>
-              <p
-                id="target-date-sub"
-                class="text-xs sm:text-sm ui-text-muted mt-0.5"
-              >
+              <p id="target-date-sub" class="text-xs ui-text-muted mt-0.5">
                 ...
               </p>
             </div>
             <button
               onclick="shiftDay(1)"
-              class="w-10 h-10 rounded-2xl ui-surface-elevated flex items-center justify-center hover:opacity-80 active:scale-90 transition"
+              class="w-8 h-8 rounded-xl ui-surface-elevated flex items-center justify-center hover:opacity-80 active:scale-90 transition"
             >
               <svg
-                class="w-5 h-5"
+                class="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2.5"
@@ -816,13 +809,13 @@
             </button>
           </div>
 
-          <div class="flex items-center justify-end gap-2 flex-wrap">
+          <div class="flex items-center justify-end gap-1.5 flex-wrap">
             <button
               onclick="openOverrideModal()"
-              class="text-xs sm:text-sm font-semibold ui-surface-elevated px-3.5 py-2 rounded-xl transition hover:opacity-80 active:scale-95 flex items-center gap-1.5 ui-accent-text"
+              class="text-xs font-semibold ui-surface-elevated px-3 py-1.5 rounded-lg transition hover:opacity-80 active:scale-95 flex items-center gap-1.5 ui-accent-text"
             >
               <svg
-                class="w-4 h-4"
+                class="w-3.5 h-3.5"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -838,43 +831,42 @@
             <input
               type="text"
               id="date-picker"
-              class="ui-surface-elevated font-mono-custom w-36 text-center text-xs sm:text-sm font-bold py-2 px-3 rounded-xl cursor-pointer border ui-border focus:outline-none transition hover:border-indigo-500"
+              class="ui-surface-elevated font-mono-custom w-32 text-center text-xs font-bold py-1.5 px-2.5 rounded-lg cursor-pointer border ui-border focus:outline-none transition hover:border-indigo-500"
             />
             <button
               onclick="resetToTomorrow()"
-              class="text-xs sm:text-sm font-semibold ui-surface-elevated px-3 py-2 rounded-xl transition hover:opacity-80 active:scale-95"
+              class="text-xs font-semibold ui-surface-elevated px-2.5 py-1.5 rounded-lg transition hover:opacity-80 active:scale-95"
             >
               Сброс
             </button>
           </div>
         </div>
 
-        <div id="tomorrow-lessons-container" class="space-y-3">
-          <div class="text-center py-16 ui-text-muted font-medium text-sm">
+        <div id="tomorrow-lessons-container" class="space-y-2">
+          <div class="text-center py-10 ui-text-muted font-medium text-xs">
             Загрузка данных...
           </div>
         </div>
       </section>
 
       <!-- TAB 2: ЗАПИСАТЬ ДЗ -->
-      <section id="tab-add" class="tab-content hidden flex-col gap-4">
+      <section id="tab-add" class="tab-content hidden flex-col gap-3">
         <div
-          class="ui-surface p-5 sm:p-7 rounded-3xl flex flex-col gap-5 shadow-sm"
+          class="ui-surface p-4 sm:p-5 rounded-2xl flex flex-col gap-3.5 shadow-sm"
         >
           <div>
-            <h3 class="text-lg sm:text-xl font-bold">
+            <h3 class="text-sm sm:text-base font-bold">
               Новая запись домашнего задания
             </h3>
-            <p class="text-xs sm:text-sm ui-text-muted mt-1">
+            <p class="text-xs ui-text-muted mt-0.5">
               Выберите предмет, а планер сам найдет следующий урок в расписании
               (с учетом замен)
             </p>
           </div>
 
-          <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-3">
             <div class="relative" id="custom-subject-dropdown-wrap">
-              <label
-                class="block text-xs sm:text-sm font-bold ui-text-muted mb-1.5"
+              <label class="block text-xs font-bold ui-text-muted mb-1"
                 >Предмет</label
               >
 
@@ -882,25 +874,25 @@
                 type="button"
                 id="custom-subject-trigger"
                 onclick="toggleSubjectDropdown()"
-                class="ui-surface-elevated w-full border ui-border text-base sm:text-lg rounded-2xl px-4 py-4 flex items-center justify-between cursor-pointer font-semibold transition hover:border-indigo-500/50 active:scale-[0.99]"
+                class="ui-surface-elevated w-full border ui-border text-sm rounded-xl px-3 py-2.5 flex items-center justify-between cursor-pointer font-semibold transition hover:border-indigo-500/50 active:scale-[0.99]"
               >
-                <div class="flex items-center gap-3.5 min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0">
                   <span
                     id="selected-subject-badge"
-                    class="hidden w-9 h-9 rounded-xl ui-surface font-mono-custom text-sm font-bold items-center justify-center border ui-border ui-accent-text"
+                    class="hidden w-7 h-7 rounded-lg ui-surface font-mono-custom text-xs font-bold items-center justify-center border ui-border ui-accent-text"
                   >
                     –
                   </span>
                   <span
                     id="selected-subject-label"
-                    class="truncate text-zinc-400 font-medium"
+                    class="truncate text-zinc-400 font-medium text-xs sm:text-sm"
                   >
                     Выберите предмет из списка...
                   </span>
                 </div>
                 <svg
                   id="custom-subject-chevron"
-                  class="chevron-flip w-6 h-6 ui-text-muted flex-shrink-0 ml-2"
+                  class="chevron-flip w-4 h-4 ui-text-muted flex-shrink-0 ml-2"
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2.2"
@@ -912,11 +904,11 @@
 
               <div
                 id="custom-subject-dropdown"
-                class="custom-dropdown-rollout absolute left-0 right-0 top-[calc(100%+8px)] z-30 ui-surface rounded-2xl border ui-border shadow-2xl p-2.5 flex flex-col gap-1 backdrop-blur-xl"
+                class="custom-dropdown-rollout absolute left-0 right-0 top-[calc(100%+6px)] z-30 ui-surface rounded-xl border ui-border shadow-2xl p-2 flex flex-col gap-1 backdrop-blur-xl"
               >
                 <div
                   id="custom-subject-list"
-                  class="overflow-y-auto max-h-[380px] space-y-1.5 pr-1 no-scrollbar"
+                  class="overflow-y-auto max-h-[300px] space-y-1 pr-1 no-scrollbar"
                 ></div>
               </div>
 
@@ -924,19 +916,18 @@
             </div>
 
             <div>
-              <label
-                class="block text-xs sm:text-sm font-bold ui-text-muted mb-1.5"
+              <label class="block text-xs font-bold ui-text-muted mb-1"
                 >Дата урока</label
               >
               <input
                 type="text"
                 id="add-hw-date"
                 placeholder="Сначала выберите предмет выше..."
-                class="ui-surface-elevated font-mono-custom w-full border ui-border text-sm sm:text-base rounded-2xl px-4 py-3.5 focus:outline-none cursor-pointer font-bold"
+                class="ui-surface-elevated font-mono-custom w-full border ui-border text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-none cursor-pointer font-bold"
               />
               <p
                 id="smart-date-helper"
-                class="text-xs sm:text-sm mt-1.5 ui-accent-text font-medium"
+                class="text-xs mt-1 ui-accent-text font-medium"
               >
                 Выберите предмет для автоматического подбора даты.
               </p>
@@ -944,24 +935,23 @@
             </div>
 
             <div>
-              <label
-                class="block text-xs sm:text-sm font-bold ui-text-muted mb-1.5"
+              <label class="block text-xs font-bold ui-text-muted mb-1"
                 >Что задали?</label
               >
               <textarea
                 id="add-hw-task"
-                rows="3"
+                rows="2"
                 placeholder="Например: стр. 45 номера 3-5, выучить правило..."
-                class="ui-surface-elevated w-full border ui-border text-sm sm:text-base rounded-2xl px-4 py-3.5 focus:outline-none resize-none font-medium leading-relaxed"
+                class="ui-surface-elevated w-full border ui-border text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-none resize-none font-medium leading-relaxed"
               ></textarea>
             </div>
 
             <div
               id="add-hw-success"
-              class="smooth-banner banner-hidden p-3.5 rounded-2xl bg-emerald-500/20 text-emerald-400 font-bold text-sm text-center flex items-center justify-center gap-2"
+              class="smooth-banner banner-hidden p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 font-bold text-xs text-center flex items-center justify-center gap-2"
             >
               <svg
-                class="w-5 h-5"
+                class="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2.5"
@@ -974,10 +964,10 @@
 
             <button
               onclick="saveSmartHW()"
-              class="mt-2 w-full py-4 ui-accent-bg text-white text-base font-bold rounded-2xl transition shadow-lg active:scale-98 flex items-center justify-center gap-2"
+              class="mt-1 w-full py-3 ui-accent-bg text-white text-xs sm:text-sm font-bold rounded-xl transition shadow-md active:scale-98 flex items-center justify-center gap-2"
             >
               <svg
-                class="w-5 h-5"
+                class="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2.5"
@@ -992,14 +982,14 @@
         </div>
       </section>
 
-      <!-- TAB 3: ВСЯ НЕДЕЛЯ -->
-      <section id="tab-full-week" class="tab-content hidden flex-col gap-4">
+      <!-- TAB 3: ВСЯ НЕДЕЛЯ (КОМПАКТНАЯ СЕТКА ПО 3 В РЯД) -->
+      <section id="tab-full-week" class="tab-content hidden flex-col gap-3">
         <div
           id="full-week-container"
-          class="grid grid-cols-1 md:grid-cols-3 gap-5"
+          class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-3.5"
         >
           <div
-            class="text-center py-16 ui-text-muted font-medium text-sm col-span-full"
+            class="text-center py-12 ui-text-muted font-medium text-xs col-span-full"
           >
             Загрузка...
           </div>
@@ -1007,35 +997,35 @@
       </section>
 
       <!-- TAB 4: РАСПИСАНИЕ -->
-      <section id="tab-schedule" class="tab-content hidden flex-col gap-4">
-        <div class="flex p-1.5 ui-surface rounded-2xl gap-1.5">
+      <section id="tab-schedule" class="tab-content hidden flex-col gap-3">
+        <div class="flex p-1 ui-surface rounded-xl gap-1">
           <button
             onclick="selectScheduleDay(1)"
-            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
+            class="day-tab-btn flex-1 py-1.5 text-xs font-bold rounded-lg ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Пн
           </button>
           <button
             onclick="selectScheduleDay(2)"
-            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
+            class="day-tab-btn flex-1 py-1.5 text-xs font-bold rounded-lg ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Вт
           </button>
           <button
             onclick="selectScheduleDay(3)"
-            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
+            class="day-tab-btn flex-1 py-1.5 text-xs font-bold rounded-lg ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Ср
           </button>
           <button
             onclick="selectScheduleDay(4)"
-            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
+            class="day-tab-btn flex-1 py-1.5 text-xs font-bold rounded-lg ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Чт
           </button>
           <button
             onclick="selectScheduleDay(5)"
-            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
+            class="day-tab-btn flex-1 py-1.5 text-xs font-bold rounded-lg ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Пт
           </button>
@@ -1044,14 +1034,14 @@
         <form
           id="schedule-form"
           onsubmit="saveSchedule(event)"
-          class="ui-surface p-5 sm:p-7 rounded-3xl flex flex-col gap-4 shadow-sm"
+          class="ui-surface p-4 sm:p-5 rounded-2xl flex flex-col gap-3 shadow-sm"
         >
           <div
-            class="flex justify-between items-center border-b ui-border pb-3"
+            class="flex justify-between items-center border-b ui-border pb-2"
           >
             <h3
               id="selected-day-heading"
-              class="text-base sm:text-lg font-extrabold ui-accent-text"
+              class="text-sm sm:text-base font-extrabold ui-accent-text"
             >
               Понедельник
             </h3>
@@ -1059,10 +1049,10 @@
               >Базовое расписание</span
             >
           </div>
-          <div id="schedule-inputs-container" class="space-y-2.5"></div>
+          <div id="schedule-inputs-container" class="space-y-1.5"></div>
           <button
             type="submit"
-            class="mt-2 w-full py-3.5 ui-accent-bg text-white text-sm sm:text-base font-bold rounded-2xl transition shadow-lg active:scale-98"
+            class="mt-1 w-full py-2.5 ui-accent-bg text-white text-xs sm:text-sm font-bold rounded-xl transition shadow-md active:scale-98"
           >
             Сохранить базовое расписание
           </button>
@@ -1072,7 +1062,7 @@
 
     <!-- ПОДСКАЗКА ВНИЗУ -->
     <footer
-      class="max-w-5xl mx-auto px-4 py-3 w-full text-center text-xs ui-text-muted opacity-60"
+      class="max-w-5xl mx-auto px-4 py-2 w-full text-center text-[11px] ui-text-muted opacity-60"
     >
       <span class="hidden sm:inline">← Навигация стрелками клавиатуры →</span>
       <span class="sm:hidden">Свайпайте влево/вправо для перехода</span>
@@ -1250,7 +1240,7 @@
         ];
 
         if (uniqueSubjects.length === 0) {
-          list.innerHTML = `<div class="p-4 text-center text-xs ui-text-muted">Сначала заполните расписание в "Расписание"</div>`;
+          list.innerHTML = `<div class="p-3 text-center text-xs ui-text-muted">Сначала заполните расписание в "Расписание"</div>`;
           return;
         }
 
@@ -1288,17 +1278,17 @@
             const isToday = todayActualSubjects.includes(sub);
             return `
                     <button type="button" onclick="selectSubject('${escapeHtml(sub)}')"
-                        class="w-full flex items-center justify-between p-3 sm:p-3.5 rounded-2xl hover:bg-white/5 active:scale-[0.99] transition-all text-left">
-                        <div class="flex items-center gap-3.5 min-w-0">
-                            <span class="w-9 h-9 rounded-xl ui-surface-elevated font-mono-custom text-xs sm:text-sm font-bold flex items-center justify-center border ui-border ui-accent-text flex-shrink-0">
+                        class="w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl hover:bg-white/5 active:scale-[0.99] transition-all text-left">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <span class="w-7 h-7 rounded-lg ui-surface-elevated font-mono-custom text-xs font-bold flex items-center justify-center border ui-border ui-accent-text flex-shrink-0">
                                 ${sub.charAt(0).toUpperCase()}
                             </span>
-                            <div class="flex items-center gap-2 min-w-0">
-                                <span class="text-sm sm:text-base font-semibold truncate">${escapeHtml(sub)}</span>
-                                ${isToday ? '<span class="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">Был сегодня</span>' : ""}
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="text-xs sm:text-sm font-semibold truncate">${escapeHtml(sub)}</span>
+                                ${isToday ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">Был сегодня</span>' : ""}
                             </div>
                         </div>
-                        <svg data-sub="${escapeHtml(sub)}" class="subject-check-icon w-5 h-5 ui-accent-text flex-shrink-0 ${currentSelected === sub ? "" : "hidden"}" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <svg data-sub="${escapeHtml(sub)}" class="subject-check-icon w-4 h-4 ui-accent-text flex-shrink-0 ${currentSelected === sub ? "" : "hidden"}" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path d="M20 6 9 17l-5-5"/>
                         </svg>
                     </button>
@@ -1512,7 +1502,6 @@
           dateFormat: "Y-m-d",
           altInput: true,
           altFormat: "d-m-Y",
-          // ВЫХОДНЫЕ СДЕЛАНЫ НЕВЫБИРАЕМЫМИ (СБ = 6, ВС = 0)
           disable: [
             function (date) {
               return date.getDay() === 0 || date.getDay() === 6;
@@ -1662,14 +1651,12 @@
           document.getElementById("add-hw-lesson-num").value =
             next.lesson || "";
           helper.innerHTML = `Следующий урок: <b>${next.date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })} (${DAYS[next.date.getDay()]})</b>`;
-          helper.className =
-            "text-xs sm:text-sm mt-1.5 ui-accent-text font-bold";
+          helper.className = "text-xs mt-1 ui-accent-text font-bold";
         } else {
           fpAdd.clear();
           document.getElementById("add-hw-lesson-num").value = "";
           helper.innerHTML = `В ближайшие 2 недели урока нет. Выберите дату вручную.`;
-          helper.className =
-            "text-xs sm:text-sm mt-1.5 text-amber-500 font-bold";
+          helper.className = "text-xs mt-1 text-amber-500 font-bold";
         }
       }
 
@@ -1700,7 +1687,7 @@
           successBannerTimer = setTimeout(() => {
             successBox.classList.remove("banner-visible");
             successBox.classList.add("banner-hidden");
-          }, 3200);
+          }, 3000);
 
           document.getElementById("add-hw-task").value = "";
           document.getElementById("add-hw-subject").value = "";
@@ -1808,7 +1795,7 @@
         rescheduleBanner.classList.add("banner-hidden");
 
         if (dbDayOfWeek > 5) {
-          container.innerHTML = `<div class="ui-surface p-12 rounded-3xl text-center ui-text-muted font-bold text-base">В выходные мы отдыхаем</div>`;
+          container.innerHTML = `<div class="ui-surface p-8 rounded-2xl text-center ui-text-muted font-bold text-sm">В выходные мы отдыхаем</div>`;
           return;
         }
 
@@ -1852,7 +1839,7 @@
           }
         }
 
-        // АВТОПЕРЕНОС ДЗ ПРИ ОТМЕНЕ/ЗАМЕНЕ
+        // АВТОПЕРЕНОС ДЗ
         const rescheduledItems = [];
         for (const hw of homeworkList) {
           if (!heldSubjects.includes(hw.subject.trim())) {
@@ -1896,7 +1883,7 @@
 
         if (!dayHasLessons) {
           container.innerHTML = `
-                    <div class="ui-surface p-12 rounded-3xl text-center ui-text-muted font-bold text-base flex flex-col items-center gap-3">
+                    <div class="ui-surface p-8 rounded-2xl text-center ui-text-muted font-bold text-sm flex flex-col items-center gap-2">
                         <span>На этот день расписание пустое</span>
                         <button onclick="openOverrideModal()" class="text-xs ui-accent-text font-bold underline hover:opacity-80 transition">Добавить уроки/замены на эту дату</button>
                     </div>`;
@@ -1916,16 +1903,16 @@
             hwHTML = hwForLesson
               .map(
                 (hw) => `
-                        <div class="flex items-start justify-between gap-3.5 ui-surface-elevated p-3.5 rounded-2xl border ui-border">
-                            <label class="flex items-start gap-3.5 cursor-pointer flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2.5 ui-surface-elevated p-2.5 rounded-xl border ui-border">
+                            <label class="flex items-start gap-2.5 cursor-pointer flex-1 min-w-0">
                                 <input type="checkbox" ${hw.is_completed ? "checked" : ""} onchange="toggleHW('${hw.id}', this.checked)" 
-                                    class="mt-1 w-5 h-5 rounded-lg border ui-border cursor-pointer accent-indigo-600">
-                                <span class="text-sm sm:text-base font-medium leading-relaxed ${hw.is_completed ? "line-through ui-text-muted opacity-60" : ""} break-words">
+                                    class="mt-0.5 w-4 h-4 rounded border ui-border cursor-pointer accent-indigo-600">
+                                <span class="text-xs sm:text-sm font-medium leading-relaxed ${hw.is_completed ? "line-through ui-text-muted opacity-60" : ""} break-words">
                                     ${escapeHtml(hw.task)}
                                 </span>
                             </label>
-                            <button onclick="deleteHW('${hw.id}')" class="text-zinc-500 hover:text-rose-500 p-1 rounded-lg transition-colors" title="Удалить ДЗ">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            <button onclick="deleteHW('${hw.id}')" class="text-zinc-500 hover:text-rose-500 p-0.5 rounded transition-colors" title="Удалить ДЗ">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>`,
               )
@@ -1934,25 +1921,25 @@
 
           let statusBadge = "";
           if (item.isCancelled) {
-            statusBadge = `<span class="text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2.5 py-1 rounded-xl">Урок отменён</span>`;
+            statusBadge = `<span class="text-[10px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-md">Урок отменён</span>`;
           } else if (item.isOverridden) {
-            statusBadge = `<span class="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl">Замена</span>`;
+            statusBadge = `<span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">Замена</span>`;
           } else if (item.lesson_number >= 8) {
-            statusBadge = `<span class="text-xs font-bold text-zinc-400 bg-zinc-500/10 px-2.5 py-1 rounded-xl">Внеурочка</span>`;
+            statusBadge = `<span class="text-[10px] font-bold text-zinc-400 bg-zinc-500/10 px-2 py-0.5 rounded-md">Внеурочка</span>`;
           }
 
           fullHtml += `
-                    <div class="ui-surface p-4 sm:p-5 rounded-3xl flex flex-col gap-3 shadow-sm ${item.isCancelled ? "opacity-60" : ""}">
+                    <div class="ui-surface p-2.5 sm:p-3 rounded-2xl flex flex-col gap-2 shadow-sm ${item.isCancelled ? "opacity-60" : ""}">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3.5">
-                                <span class="w-10 h-10 rounded-2xl ui-surface-elevated font-mono-custom text-sm sm:text-base font-bold flex items-center justify-center border ui-border">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl ui-surface-elevated font-mono-custom text-xs font-bold flex items-center justify-center border ui-border">
                                     ${item.lesson_number}
                                 </span>
-                                <h3 class="text-base sm:text-lg font-bold ${item.isCancelled ? "line-through" : ""}">${escapeHtml(item.subject)}</h3>
+                                <h3 class="text-xs sm:text-sm font-bold ${item.isCancelled ? "line-through" : ""}">${escapeHtml(item.subject)}</h3>
                             </div>
                             ${statusBadge}
                         </div>
-                        ${hwHTML ? `<div class="space-y-2 mt-1 sm:pl-13">${hwHTML}</div>` : ""}
+                        ${hwHTML ? `<div class="space-y-1.5 mt-0.5 sm:pl-10">${hwHTML}</div>` : ""}
                     </div>`;
         });
         container.innerHTML = fullHtml;
@@ -1995,11 +1982,11 @@
           const isCancelled = ovrItem ? ovrItem.is_cancelled : false;
 
           list.innerHTML += `
-                    <div class="ui-surface-elevated p-3 rounded-2xl border ui-border flex items-center gap-3">
-                        <span class="w-7 h-7 rounded-xl ui-surface font-mono-custom text-xs font-bold flex items-center justify-center">${i}</span>
-                        <input type="text" id="ovr-input-${i}" value="${escapeHtml(currentSubject)}" placeholder="Без урока" class="flex-1 bg-transparent text-sm font-semibold focus:outline-none border-b ui-border pb-1">
-                        <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-rose-400 select-none">
-                            <input type="checkbox" id="ovr-cancel-${i}" ${isCancelled ? "checked" : ""} class="w-4 h-4 rounded accent-rose-500 cursor-pointer">
+                    <div class="ui-surface-elevated p-2 rounded-xl border ui-border flex items-center gap-2.5">
+                        <span class="w-6 h-6 rounded-lg ui-surface font-mono-custom text-xs font-bold flex items-center justify-center">${i}</span>
+                        <input type="text" id="ovr-input-${i}" value="${escapeHtml(currentSubject)}" placeholder="Без урока" class="flex-1 bg-transparent text-xs sm:text-sm font-semibold focus:outline-none border-b ui-border pb-0.5">
+                        <label class="flex items-center gap-1 cursor-pointer text-xs font-semibold text-rose-400 select-none">
+                            <input type="checkbox" id="ovr-cancel-${i}" ${isCancelled ? "checked" : ""} class="w-3.5 h-3.5 rounded accent-rose-500 cursor-pointer">
                             <span>Отменён</span>
                         </label>
                     </div>
@@ -2074,7 +2061,7 @@
         loadTomorrowView("none");
       }
 
-      // --- ВСЯ НЕДЕЛЯ (3 В РЯД НА ПК, 2 ВО ВТОРОМ РЯДУ) ---
+      // --- ВСЯ НЕДЕЛЯ: КОМПАКТНЫЕ ПАНЕЛИ (ПОМЕЩАЮТСЯ БЕЗ СКРОЛЛА) ---
       function renderFullWeek() {
         const container = document.getElementById("full-week-container");
         container.innerHTML = "";
@@ -2087,23 +2074,23 @@
           if (lessonsThisDay.length > 0) hasAnyLessons = true;
 
           let html = `
-                    <div class="ui-surface p-5 sm:p-6 rounded-3xl flex flex-col gap-4 shadow-sm hover:border-indigo-500/40 transition">
-                        <div class="flex items-center justify-between border-b ui-border pb-3">
-                            <h4 class="text-base sm:text-lg font-extrabold ui-accent-text">${DAYS[d]}</h4>
-                            <span class="text-xs font-bold ui-text-muted">${lessonsThisDay.length} ур.</span>
+                    <div class="ui-surface p-3 sm:p-3.5 rounded-2xl flex flex-col gap-2.5 shadow-sm hover:border-indigo-500/40 transition">
+                        <div class="flex items-center justify-between border-b ui-border pb-1.5">
+                            <h4 class="text-xs sm:text-sm font-extrabold ui-accent-text">${DAYS[d]}</h4>
+                            <span class="text-[11px] font-bold ui-text-muted">${lessonsThisDay.length} ур.</span>
                         </div>
-                        <div class="space-y-3 flex-1">
+                        <div class="space-y-1.5 flex-1">
                 `;
 
           if (lessonsThisDay.length === 0) {
-            html += `<p class="text-xs ui-text-muted italic py-4 text-center">Нет уроков</p>`;
+            html += `<p class="text-xs ui-text-muted italic py-2 text-center">Нет уроков</p>`;
           } else {
             html += lessonsThisDay
               .map(
                 (l) => `
-                        <div class="flex items-center gap-3.5 py-0.5">
-                            <span class="w-8 h-8 rounded-xl ui-surface-elevated font-mono-custom text-xs font-bold flex items-center justify-center border ui-border flex-shrink-0">${l.lesson_number}</span>
-                            <span class="text-sm sm:text-base font-semibold truncate">${escapeHtml(l.subject)}</span>
+                        <div class="flex items-center gap-2 py-0.5">
+                            <span class="w-6 h-6 rounded-lg ui-surface-elevated font-mono-custom text-[11px] font-bold flex items-center justify-center border ui-border flex-shrink-0">${l.lesson_number}</span>
+                            <span class="text-xs sm:text-sm font-semibold truncate">${escapeHtml(l.subject)}</span>
                         </div>
                     `,
               )
@@ -2114,7 +2101,7 @@
           container.innerHTML += html;
         }
         if (!hasAnyLessons)
-          container.innerHTML = `<div class="text-center py-16 ui-text-muted font-bold text-base col-span-full">Расписание пустое</div>`;
+          container.innerHTML = `<div class="text-center py-12 ui-text-muted font-bold text-xs col-span-full">Расписание пустое</div>`;
       }
 
       // --- БАЗОВОЕ РАСПИСАНИЕ ---
@@ -2123,10 +2110,10 @@
         container.innerHTML = "";
         for (let i = 1; i <= 9; i++) {
           container.innerHTML += `
-                    <div class="flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-xl ui-surface-elevated font-mono-custom text-xs font-bold flex items-center justify-center border ui-border">${i}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg ui-surface-elevated font-mono-custom text-xs font-bold flex items-center justify-center border ui-border">${i}</span>
                         <input type="text" id="sched-input-${i}" placeholder="${i >= 8 ? "Внеурочка или пусто" : "Название предмета"}" 
-                            class="ui-surface-elevated flex-1 border ui-border text-sm sm:text-base font-semibold rounded-2xl px-4 py-3 focus:outline-none text-current">
+                            class="ui-surface-elevated flex-1 border ui-border text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 focus:outline-none text-current">
                     </div>`;
         }
       }
@@ -2136,10 +2123,10 @@
         document.querySelectorAll(".day-tab-btn").forEach((btn, idx) => {
           if (idx + 1 === dayNum) {
             btn.className =
-              "day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl ui-accent-bg text-white shadow transition";
+              "day-tab-btn flex-1 py-1.5 text-xs font-extrabold rounded-lg ui-accent-bg text-white shadow transition";
           } else {
             btn.className =
-              "day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 transition";
+              "day-tab-btn flex-1 py-1.5 text-xs font-bold rounded-lg ui-text-muted hover:opacity-100 transition";
           }
         });
         document.getElementById("selected-day-heading").textContent =
