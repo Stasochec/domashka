@@ -1,69 +1,307 @@
 <!doctype html>
-<html lang="ru" class="dark">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>Умный Планер ДЗ</title>
+    <title>Планер ДЗ</title>
 
-    <!-- PWA ТЕГИ -->
+    <!-- PWA ТЕГИ И ИКОНКА -->
     <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#18181b" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-    <meta name="apple-mobile-web-app-title" content="Планер ДЗ" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230c0d10'/><rect x='32' y='32' width='448' height='448' rx='96' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='8'/><path d='M160 150h192M160 230h192M160 310h120' stroke='%236366f1' stroke-width='32' stroke-linecap='round'/><circle cx='372' cy='330' r='46' fill='%234f46e5'/><path d='M356 330l12 12 24-24' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+    />
     <link
       rel="apple-touch-icon"
-      href="https://cdn-icons-png.flaticon.com/512/3176/3176366.png"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230c0d10'/><rect x='32' y='32' width='448' height='448' rx='96' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='8'/><path d='M160 150h192M160 230h192M160 310h120' stroke='%236366f1' stroke-width='32' stroke-linecap='round'/><circle cx='372' cy='330' r='46' fill='%234f46e5'/><path d='M356 330l12 12 24-24' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>"
     />
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind & Supabase -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Flatpickr -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
-    />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
-    <!-- Шрифты -->
+
+    <!-- Шрифт -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-        -webkit-tap-highlight-color: transparent;
+      /* ЦВЕТОВЫЕ ТЕМЫ */
+      body[data-theme="dark"] {
+        --bg-base: #0c0d10;
+        --bg-surface: #17181d;
+        --bg-surface-elevated: #21232a;
+        --border-color: #2a2c35;
+        --text-main: #f4f4f7;
+        --text-muted: #8b8f9e;
+        --accent: #6366f1;
+        --accent-hover: #4f46e5;
+        --accent-soft: rgba(99, 102, 241, 0.15);
       }
-      .flatpickr-calendar.dark {
-        background: #18181b;
-        border: 1px solid #27272a;
-        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+      body[data-theme="midnight"] {
+        --bg-base: #060913;
+        --bg-surface: #0e1526;
+        --bg-surface-elevated: #162038;
+        --border-color: #1e2c4c;
+        --text-main: #f8fafc;
+        --text-muted: #8295b8;
+        --accent: #0ea5e9;
+        --accent-hover: #0284c7;
+        --accent-soft: rgba(14, 165, 233, 0.15);
       }
-      .flatpickr-day.selected {
-        background: #4f46e5 !important;
-        border-color: #4f46e5 !important;
+      body[data-theme="emerald"] {
+        --bg-base: #05100c;
+        --bg-surface: #0a1e17;
+        --bg-surface-elevated: #102d23;
+        --border-color: #184133;
+        --text-main: #f0fdf4;
+        --text-muted: #7ca896;
+        --accent: #10b981;
+        --accent-hover: #059669;
+        --accent-soft: rgba(16, 185, 129, 0.15);
       }
-      main {
-        padding-bottom: env(safe-area-inset-bottom, 20px);
+      body[data-theme="light"] {
+        --bg-base: #f1f3f7;
+        --bg-surface: #ffffff;
+        --bg-surface-elevated: #e6e9f0;
+        --border-color: #d6dbe6;
+        --text-main: #111827;
+        --text-muted: #64748b;
+        --accent: #4f46e5;
+        --accent-hover: #4338ca;
+        --accent-soft: rgba(79, 70, 229, 0.12);
       }
 
-      /* Скрытие скроллбара */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-base);
+        color: var(--text-main);
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        touch-action: pan-y;
+        transition: background-color 0.2s ease;
+      }
+      .font-mono-custom {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .ui-surface {
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-color);
+      }
+      .ui-surface-elevated {
+        background-color: var(--bg-surface-elevated);
+      }
+      .ui-border {
+        border-color: var(--border-color);
+      }
+      .ui-text-muted {
+        color: var(--text-muted);
+      }
+      .ui-accent-bg {
+        background-color: var(--accent);
+      }
+      .ui-accent-bg:hover {
+        background-color: var(--accent-hover);
+      }
+      .ui-accent-text {
+        color: var(--accent);
+      }
+
+      #tab-indicator {
+        transition:
+          transform 0.22s cubic-bezier(0.2, 0, 0, 1),
+          width 0.22s cubic-bezier(0.2, 0, 0, 1);
+        background-color: var(--accent);
+        will-change: transform, width;
+        transform: translate3d(0, 0, 0);
+      }
+
+      @keyframes fastTabFade {
+        from {
+          opacity: 0;
+          transform: translate3d(0, 6px, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      .animate-tab {
+        animation: fastTabFade 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: opacity, transform;
+        backface-visibility: hidden;
+      }
+
+      /* ПЛАВНЫЙ ВХОД И ВЫХОД ПЛАШЕК-УВЕДОМЛЕНИЙ */
+      .smooth-banner {
+        transition:
+          opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+          max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+          padding 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+          margin 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+        will-change: opacity, transform, max-height;
+      }
+      .smooth-banner.banner-hidden {
+        opacity: 0;
+        transform: scale(0.96) translate3d(0, -8px, 0);
+        max-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        border-width: 0 !important;
+        pointer-events: none;
+      }
+      .smooth-banner.banner-visible {
+        opacity: 1;
+        transform: scale(1) translate3d(0, 0, 0);
+        max-height: 120px;
+        pointer-events: auto;
+      }
+
+      /* КРУПНЫЙ ВЫКАТЫВАЮЩИЙСЯ СПИСОК */
+      .custom-dropdown-rollout {
+        max-height: 0;
+        opacity: 0;
+        transform: scaleY(0.96) translate3d(0, -6px, 0);
+        transform-origin: top;
+        transition:
+          max-height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .custom-dropdown-rollout.open {
+        max-height: 440px;
+        opacity: 1;
+        transform: scaleY(1) translate3d(0, 0, 0);
+        pointer-events: auto;
+      }
+
+      .chevron-flip {
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .chevron-flip.flipped {
+        transform: rotate(180deg);
+      }
+
+      /* ПЛАВНОЕ БОКОВОЕ СКОЛЬЖЕНИЕ МЕСЯЦЕВ В КАЛЕНДАРЕ */
+      .flatpickr-days {
+        overflow: hidden !important;
+        position: relative !important;
+      }
+      @keyframes slideMonthRight {
+        from {
+          opacity: 0.15;
+          transform: translate3d(36px, 0, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      @keyframes slideMonthLeft {
+        from {
+          opacity: 0.15;
+          transform: translate3d(-36px, 0, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      .slide-month-right {
+        animation: slideMonthRight 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: transform, opacity;
+      }
+      .slide-month-left {
+        animation: slideMonthLeft 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: transform, opacity;
+      }
+
+      /* Плавные сдвиги дней на главной */
+      @keyframes slideRightClean {
+        from {
+          opacity: 0.3;
+          transform: translate3d(16px, 0, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      .slide-right {
+        animation: slideRightClean 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      @keyframes slideLeftClean {
+        from {
+          opacity: 0.3;
+          transform: translate3d(-16px, 0, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      .slide-left {
+        animation: slideLeftClean 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      @keyframes modalPop {
+        from {
+          opacity: 0;
+          transform: scale(0.96) translate3d(0, 8px, 0);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translate3d(0, 0, 0);
+        }
+      }
+      .animate-modal {
+        animation: modalPop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      @keyframes shakeError {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+        25% {
+          transform: translate3d(-6px, 0, 0);
+        }
+        75% {
+          transform: translate3d(6px, 0, 0);
+        }
+      }
+      .animate-shake {
+        animation: shakeError 0.25s ease-in-out;
+      }
+
       .no-scrollbar::-webkit-scrollbar {
         display: none;
       }
@@ -72,55 +310,168 @@
         scrollbar-width: none;
       }
 
-      /* АНИМАЦИЯ ПОЯВЛЕНИЯ ВКЛАДОК */
-      @keyframes slideUpFade {
-        from {
-          opacity: 0;
-          transform: translateY(15px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      /* ИСПРАВЛЕННАЯ ШИРИНА И СТИЛИЗАЦИЯ FLATPICKR (ВОСКРЕСЕНЬЕ НЕ ОБРЕЗАЕТСЯ) */
+      .flatpickr-calendar {
+        background: var(--bg-surface) !important;
+        border: 1px solid var(--border-color) !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+        border-radius: 24px !important;
+        font-family: "Inter", sans-serif !important;
+        width: 326px !important; /* Исправление: полная ширина для всех 7 дней */
+        max-width: 95vw !important;
+        box-sizing: border-box !important;
+        padding: 8px 8px 12px 8px !important;
       }
-      .animate-tab {
-        animation: slideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      .flatpickr-innerContainer {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+      }
+      .flatpickr-rContainer {
+        width: 308px !important;
+        max-width: 100% !important;
+      }
+      .flatpickr-weekdays {
+        width: 308px !important;
+        max-width: 100% !important;
+      }
+      .flatpickr-days {
+        width: 308px !important;
+        max-width: 100% !important;
+      }
+      .dayContainer {
+        width: 308px !important;
+        min-width: 308px !important;
+        max-width: 308px !important;
+      }
+
+      .flatpickr-months {
+        border-bottom: 1px solid var(--border-color) !important;
+        padding-bottom: 8px !important;
+      }
+      .flatpickr-months .flatpickr-month,
+      .flatpickr-current-month,
+      .flatpickr-current-month .cur-month,
+      .flatpickr-current-month input.cur-year {
+        color: var(--text-main) !important;
+        font-weight: 800 !important;
+        font-size: 16px !important;
+        fill: var(--text-main) !important;
+      }
+      .flatpickr-current-month .flatpickr-monthDropdown-months {
+        color: var(--text-main) !important;
+        background: transparent !important;
+        font-weight: 800 !important;
+        appearance: none !important;
+      }
+      .flatpickr-current-month .flatpickr-monthDropdown-months option {
+        background-color: var(--bg-surface) !important;
+        color: var(--text-main) !important;
+      }
+      .flatpickr-months .flatpickr-prev-month,
+      .flatpickr-months .flatpickr-next-month {
+        color: var(--text-main) !important;
+        fill: var(--text-main) !important;
+        padding: 6px !important;
+      }
+      .flatpickr-months .flatpickr-prev-month svg,
+      .flatpickr-months .flatpickr-next-month svg {
+        fill: var(--text-main) !important;
+        color: var(--text-main) !important;
+      }
+
+      /* Будни в заголовке */
+      span.flatpickr-weekday {
+        color: var(--text-muted) !important;
+        font-weight: 700 !important;
+        font-size: 13px !important;
+      }
+      /* ВЫХОДНЫЕ (Сб, Вс) В ЗАГОЛОВКЕ: Серые */
+      span.flatpickr-weekday:nth-child(6),
+      span.flatpickr-weekday:nth-child(7) {
+        color: #52525b !important;
+        opacity: 0.6 !important;
+      }
+
+      .flatpickr-day {
+        color: var(--text-main) !important;
+        border-radius: 14px !important;
+        font-weight: 600 !important;
+      }
+      .flatpickr-day.today {
+        border-color: var(--accent) !important;
+      }
+      .flatpickr-day.selected {
+        background: var(--accent) !important;
+        border-color: var(--accent) !important;
+        color: #ffffff !important;
+      }
+
+      /* ВЫХОДНЫЕ (Сб, Вс) В СЕТКЕ: затемненные и серые */
+      .dayContainer .flatpickr-day:nth-child(7n-1),
+      .dayContainer .flatpickr-day:nth-child(7n) {
+        color: #52525b !important;
+        opacity: 0.35 !important;
+      }
+
+      /* ОТКЛЮЧЕННЫЕ ДНИ (включая заблокированные выходные) */
+      .flatpickr-day.flatpickr-disabled,
+      .flatpickr-day.flatpickr-disabled:hover {
+        color: #3f3f46 !important;
+        opacity: 0.25 !important;
+        cursor: not-allowed !important;
+        pointer-events: none !important;
+        background: transparent !important;
+        border-color: transparent !important;
       }
     </style>
   </head>
-  <body
-    class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white relative"
-  >
-    <!-- ЭКРАН БЛОКИРОВКИ -->
+  <body data-theme="dark" class="min-h-screen flex flex-col">
+    <!-- ЭКРАН ВХОДА (PIN) -->
     <div
       id="auth-screen"
-      class="fixed inset-0 z-50 bg-zinc-950/90 backdrop-blur-md flex flex-col items-center justify-center p-4 transition-opacity duration-300"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-opacity duration-200"
     >
       <div
-        class="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-sm flex flex-col gap-6 shadow-2xl"
+        id="auth-box"
+        class="ui-surface p-7 sm:p-8 rounded-3xl w-full max-w-xs flex flex-col items-center gap-5 text-center shadow-2xl"
       >
-        <div class="text-center">
-          <div
-            class="w-12 h-12 bg-indigo-600 rounded-xl mx-auto flex items-center justify-center text-xl shadow-lg shadow-indigo-500/20 mb-4"
+        <div
+          id="lock-icon"
+          class="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg ui-accent-bg"
+        >
+          <svg
+            class="w-7 h-7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
           >
-            🔒
-          </div>
-          <h2 class="text-xl font-bold text-zinc-100">Вход в планер</h2>
-          <p class="text-xs text-zinc-400 mt-1">Доступ только для владельца</p>
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
         </div>
-        <form onsubmit="checkPassword(event)" class="flex flex-col gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold tracking-tight">Вход в планер</h2>
+          <p class="text-xs ui-text-muted mt-1">Введите PIN для авторизации</p>
+        </div>
+        <form
+          onsubmit="checkPassword(event)"
+          class="w-full flex flex-col gap-3.5"
+        >
           <input
             type="password"
             id="password-input"
-            placeholder="Введите пароль..."
-            class="w-full bg-zinc-950 border border-zinc-800 text-zinc-100 text-sm rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center tracking-widest"
+            maxlength="8"
+            placeholder="••••"
+            class="ui-surface-elevated font-mono-custom w-full border ui-border text-center text-2xl tracking-[0.4em] py-3.5 px-4 rounded-xl focus:outline-none text-current"
           />
-          <p id="auth-error" class="text-xs text-rose-500 text-center hidden">
-            Неверный пароль!
+          <p id="auth-error" class="text-xs text-rose-500 font-semibold hidden">
+            Неверный PIN-код!
           </p>
           <button
             type="submit"
-            class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm py-3 rounded-lg transition shadow-lg shadow-indigo-600/20"
+            class="w-full py-3.5 px-4 ui-accent-bg text-white text-sm font-bold rounded-xl transition shadow-lg active:scale-95"
           >
             Войти
           </button>
@@ -128,283 +479,609 @@
       </div>
     </div>
 
-    <!-- Header -->
-    <header
-      class="border-b border-zinc-800/80 bg-zinc-900/50 backdrop-blur sticky top-0 z-40"
+    <!-- МОДАЛЬНОЕ ОКНО: ЗАМЕНЫ НА ДЕНЬ -->
+    <div
+      id="override-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden"
     >
       <div
-        class="max-w-4xl mx-auto px-4 py-3.5 flex justify-between items-center"
-        style="padding-top: calc(14px + env(safe-area-inset-top))"
+        id="override-modal-box"
+        class="ui-surface p-5 sm:p-6 rounded-3xl w-full max-w-lg flex flex-col gap-4 shadow-2xl max-h-[90vh] overflow-hidden animate-modal"
+      >
+        <div class="flex items-center justify-between border-b ui-border pb-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold flex items-center gap-2">
+              <svg
+                class="w-5 h-5 ui-accent-text"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+              Замены на день
+            </h3>
+            <p
+              id="override-modal-date-label"
+              class="text-xs ui-text-muted mt-0.5"
+            >
+              ...
+            </p>
+          </div>
+          <button
+            onclick="closeOverrideModal()"
+            class="p-2 rounded-xl ui-surface-elevated hover:opacity-80 active:scale-95 transition text-xs"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <p class="text-xs ui-text-muted">
+          Если урок отменен или заменен, домашка по нему автоматически
+          перенесется на следующий урок!
+        </p>
+
+        <div
+          id="override-inputs-list"
+          class="space-y-2 overflow-y-auto pr-1 flex-1 max-h-[50vh]"
+        ></div>
+
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 border-t ui-border"
+        >
+          <button
+            onclick="resetDayOverrides()"
+            type="button"
+            class="w-full sm:w-auto text-xs font-semibold px-4 py-2.5 rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 active:scale-95 transition"
+          >
+            Сбросить к обычному
+          </button>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              onclick="closeOverrideModal()"
+              type="button"
+              class="flex-1 sm:flex-none text-xs font-semibold px-4 py-2.5 rounded-xl ui-surface-elevated hover:opacity-80 active:scale-95 transition"
+            >
+              Отмена
+            </button>
+            <button
+              onclick="saveDayOverrides()"
+              type="button"
+              class="flex-1 sm:flex-none text-xs font-bold px-5 py-2.5 rounded-xl ui-accent-bg text-white hover:opacity-90 active:scale-95 transition"
+            >
+              Сохранить замены
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ШАПКА -->
+    <header
+      class="sticky top-0 z-40 backdrop-blur-md border-b ui-border bg-opacity-80"
+      style="background-color: var(--bg-base)"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex justify-between items-center"
+        style="padding-top: calc(12px + env(safe-area-inset-top))"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20"
+            class="w-9 h-9 rounded-xl ui-accent-bg flex items-center justify-center font-black text-white text-base shadow-md"
           >
-            У
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+              />
+              <path d="M6 6h10" />
+              <path d="M6 10h10" />
+            </svg>
           </div>
-          <h1 class="text-lg font-semibold tracking-tight text-zinc-100">
-            Учебный планер
-          </h1>
+          <h1 class="text-lg font-bold tracking-tight">Учебный планер</h1>
         </div>
+
         <div class="flex items-center gap-2">
-          <div
-            class="text-xs text-zinc-500 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800"
+          <button
+            onclick="cycleTheme()"
+            title="Сменить тему"
+            class="ui-surface px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 hover:opacity-80 active:scale-95 transition"
           >
-            26/27
-          </div>
+            <svg
+              class="w-4 h-4 ui-accent-text"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+              <path
+                d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2Z"
+              />
+            </svg>
+            <span id="theme-btn-label" class="capitalize">Тёмная</span>
+          </button>
           <button
             onclick="logout()"
-            class="text-xs text-zinc-500 hover:text-rose-400 bg-zinc-900 px-2 py-1.5 rounded-lg border border-zinc-800 transition"
+            title="Выйти"
+            class="ui-surface p-2 rounded-xl text-xs ui-text-muted hover:text-rose-500 active:scale-90 transition"
           >
-            🚪 Выход
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" x2="9" y1="12" y2="12" />
+            </svg>
           </button>
         </div>
       </div>
+
+      <!-- НАВИГАЦИОННЫЕ ВКЛАДКИ -->
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <nav
+          class="relative flex justify-between text-xs sm:text-sm font-bold overflow-x-auto no-scrollbar select-none"
+          id="tabs-container"
+        >
+          <button
+            id="tab-btn-view"
+            onclick="switchTab('view', this)"
+            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+              <line x1="16" x2="16" y1="2" y2="6" />
+              <line x1="8" x2="8" y1="2" y2="6" />
+              <line x1="3" x2="21" y1="10" y2="10" />
+              <path d="m9 16 2 2 4-4" />
+            </svg>
+            <span>Уроки & ДЗ</span>
+          </button>
+          <button
+            id="tab-btn-add"
+            onclick="switchTab('add', this)"
+            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" x2="12" y1="8" y2="16" />
+              <line x1="8" x2="16" y1="12" y2="12" />
+            </svg>
+            <span>Добавить ДЗ</span>
+          </button>
+          <button
+            id="tab-btn-full-week"
+            onclick="switchTab('full-week', this)"
+            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <rect width="7" height="9" x="3" y="3" rx="1" />
+              <rect width="7" height="5" x="14" y="3" rx="1" />
+              <rect width="7" height="9" x="14" y="12" rx="1" />
+              <rect width="7" height="5" x="3" y="16" rx="1" />
+            </svg>
+            <span>Неделя</span>
+          </button>
+          <button
+            id="tab-btn-schedule"
+            onclick="switchTab('schedule', this)"
+            class="tab-button flex-1 text-center py-3 ui-text-muted whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span>Расписание</span>
+          </button>
+          <div
+            id="tab-indicator"
+            class="absolute bottom-0 h-1 rounded-t-full"
+          ></div>
+        </nav>
+      </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-1 flex flex-col gap-6">
-      <!-- Navigation Tabs (с плавающим ползунком) -->
-      <div
-        class="relative flex border-b border-zinc-800 gap-1 text-sm font-medium overflow-x-auto no-scrollbar"
-        id="tabs-container"
-      >
-        <button
-          id="tab-btn-view"
-          onclick="switchTab('view', this)"
-          class="tab-button relative px-4 py-3 text-indigo-400 transition whitespace-nowrap"
-        >
-          👀 ДЗ
-        </button>
-        <button
-          id="tab-btn-add"
-          onclick="switchTab('add', this)"
-          class="tab-button relative px-4 py-3 text-zinc-400 hover:text-zinc-200 transition whitespace-nowrap"
-        >
-          ✍️ Добавить
-        </button>
-        <button
-          id="tab-btn-full-week"
-          onclick="switchTab('full-week', this)"
-          class="tab-button relative px-4 py-3 text-zinc-400 hover:text-zinc-200 transition whitespace-nowrap"
-        >
-          🗓️ Неделя
-        </button>
-        <button
-          id="tab-btn-schedule"
-          onclick="switchTab('schedule', this)"
-          class="tab-button relative px-4 py-3 text-zinc-400 hover:text-zinc-200 transition whitespace-nowrap"
-        >
-          ⚙️ Редактор
-        </button>
-
-        <!-- Плавный синий ползунок -->
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main
+      class="max-w-5xl mx-auto px-4 sm:px-6 py-5 w-full flex-1 flex flex-col gap-5 select-text overflow-hidden"
+    >
+      <!-- TAB 1: ПРОСМОТР УРОКОВ & ДЗ -->
+      <section id="tab-view" class="tab-content flex flex-col gap-4">
+        <!-- Баннер автопереноса -->
         <div
-          id="tab-indicator"
-          class="absolute bottom-0 h-[2px] bg-indigo-500 rounded-t-md transition-all duration-300 ease-out"
-        ></div>
-      </div>
-
-      <!-- TAB 1: ПРОСМОТР ДЗ -->
-      <section
-        id="tab-view"
-        class="tab-content flex flex-col gap-5 animate-tab"
-      >
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80"
+          id="reschedule-banner"
+          class="smooth-banner banner-hidden p-4 rounded-3xl bg-amber-500/15 border border-amber-500/30 flex items-start gap-3.5"
         >
-          <div>
-            <span
-              id="target-date-label"
-              class="text-xs uppercase font-semibold text-indigo-400 tracking-wider"
-              >Уроки на день</span
-            >
-            <h2
-              id="target-date-heading"
-              class="text-xl font-bold text-zinc-100 mt-0.5"
-            >
-              ...
-            </h2>
+          <svg
+            class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <div class="text-xs sm:text-sm text-amber-200">
+            <span class="font-bold">Урок отменен или заменен:</span>
+            <span id="reschedule-banner-text"></span>
           </div>
-          <div class="flex items-center gap-2">
+        </div>
+
+        <!-- Панель управления днем -->
+        <div
+          class="ui-surface p-4 sm:p-5 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
+        >
+          <div class="flex items-center justify-between sm:justify-start gap-3">
+            <button
+              onclick="shiftDay(-1)"
+              class="w-10 h-10 rounded-2xl ui-surface-elevated flex items-center justify-center hover:opacity-80 active:scale-90 transition"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
+              >
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2
+                  id="target-date-heading"
+                  class="text-lg sm:text-xl font-extrabold capitalize"
+                >
+                  ...
+                </h2>
+                <span
+                  id="target-is-today-badge"
+                  class="hidden text-xs font-bold px-2 py-0.5 rounded-md ui-accent-bg text-white"
+                  >Завтра</span
+                >
+              </div>
+              <p
+                id="target-date-sub"
+                class="text-xs sm:text-sm ui-text-muted mt-0.5"
+              >
+                ...
+              </p>
+            </div>
+            <button
+              onclick="shiftDay(1)"
+              class="w-10 h-10 rounded-2xl ui-surface-elevated flex items-center justify-center hover:opacity-80 active:scale-90 transition"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 flex-wrap">
+            <button
+              onclick="openOverrideModal()"
+              class="text-xs sm:text-sm font-semibold ui-surface-elevated px-3.5 py-2 rounded-xl transition hover:opacity-80 active:scale-95 flex items-center gap-1.5 ui-accent-text"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+              <span>Замены на день</span>
+            </button>
+
+            <!-- ТОЛЬКО В КАЛЕНДАРЕ ОТОБРАЖАЕТСЯ DD-MM-YYYY -->
             <input
               type="text"
               id="date-picker"
-              placeholder="Выбрать дату"
-              class="bg-zinc-800 border border-zinc-700 text-zinc-200 text-sm rounded-lg px-3 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center cursor-pointer"
+              class="ui-surface-elevated font-mono-custom w-36 text-center text-xs sm:text-sm font-bold py-2 px-3 rounded-xl cursor-pointer border ui-border focus:outline-none transition hover:border-indigo-500"
             />
             <button
               onclick="resetToTomorrow()"
-              class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 rounded-lg transition"
+              class="text-xs sm:text-sm font-semibold ui-surface-elevated px-3 py-2 rounded-xl transition hover:opacity-80 active:scale-95"
             >
               Сброс
             </button>
           </div>
         </div>
+
         <div id="tomorrow-lessons-container" class="space-y-3">
-          <div class="text-center py-12 text-zinc-500 text-sm">
+          <div class="text-center py-16 ui-text-muted font-medium text-sm">
             Загрузка данных...
           </div>
         </div>
       </section>
 
-      <!-- TAB 2: ДОБАВИТЬ ДЗ -->
-      <section id="tab-add" class="tab-content hidden flex-col gap-5">
+      <!-- TAB 2: ЗАПИСАТЬ ДЗ -->
+      <section id="tab-add" class="tab-content hidden flex-col gap-4">
         <div
-          class="bg-zinc-900/60 p-5 rounded-xl border border-zinc-800/80 flex flex-col gap-5"
+          class="ui-surface p-5 sm:p-7 rounded-3xl flex flex-col gap-5 shadow-sm"
         >
-          <h3 class="text-lg font-semibold text-zinc-100">
-            Новое домашнее задание
-          </h3>
+          <div>
+            <h3 class="text-lg sm:text-xl font-bold">
+              Новая запись домашнего задания
+            </h3>
+            <p class="text-xs sm:text-sm ui-text-muted mt-1">
+              Выберите предмет, а планер сам найдет следующий урок в расписании
+              (с учетом замен)
+            </p>
+          </div>
+
           <div class="flex flex-col gap-4">
-            <div>
-              <label class="block text-xs font-medium text-zinc-400 mb-1.5"
+            <div class="relative" id="custom-subject-dropdown-wrap">
+              <label
+                class="block text-xs sm:text-sm font-bold ui-text-muted mb-1.5"
                 >Предмет</label
               >
-              <select
-                id="add-hw-subject"
-                onchange="calculateSmartDate()"
-                class="w-full bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition appearance-none cursor-pointer"
+
+              <button
+                type="button"
+                id="custom-subject-trigger"
+                onclick="toggleSubjectDropdown()"
+                class="ui-surface-elevated w-full border ui-border text-base sm:text-lg rounded-2xl px-4 py-4 flex items-center justify-between cursor-pointer font-semibold transition hover:border-indigo-500/50 active:scale-[0.99]"
               >
-                <option value="">Сначала заполните расписание...</option>
-              </select>
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <span
+                    id="selected-subject-badge"
+                    class="hidden w-9 h-9 rounded-xl ui-surface font-mono-custom text-sm font-bold items-center justify-center border ui-border ui-accent-text"
+                  >
+                    –
+                  </span>
+                  <span
+                    id="selected-subject-label"
+                    class="truncate text-zinc-400 font-medium"
+                  >
+                    Выберите предмет из списка...
+                  </span>
+                </div>
+                <svg
+                  id="custom-subject-chevron"
+                  class="chevron-flip w-6 h-6 ui-text-muted flex-shrink-0 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              <div
+                id="custom-subject-dropdown"
+                class="custom-dropdown-rollout absolute left-0 right-0 top-[calc(100%+8px)] z-30 ui-surface rounded-2xl border ui-border shadow-2xl p-2.5 flex flex-col gap-1 backdrop-blur-xl"
+              >
+                <div
+                  id="custom-subject-list"
+                  class="overflow-y-auto max-h-[380px] space-y-1.5 pr-1 no-scrollbar"
+                ></div>
+              </div>
+
+              <input type="hidden" id="add-hw-subject" value="" />
             </div>
+
             <div>
-              <label class="block text-xs font-medium text-zinc-400 mb-1.5"
-                >На какую дату задано?</label
+              <label
+                class="block text-xs sm:text-sm font-bold ui-text-muted mb-1.5"
+                >Дата урока</label
               >
               <input
                 type="text"
                 id="add-hw-date"
-                placeholder="Сначала выберите предмет..."
-                class="w-full bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer"
+                placeholder="Сначала выберите предмет выше..."
+                class="ui-surface-elevated font-mono-custom w-full border ui-border text-sm sm:text-base rounded-2xl px-4 py-3.5 focus:outline-none cursor-pointer font-bold"
               />
               <p
                 id="smart-date-helper"
-                class="text-xs mt-1.5 font-medium text-indigo-400"
+                class="text-xs sm:text-sm mt-1.5 ui-accent-text font-medium"
               >
-                Выберите предмет, чтобы найти следующий урок.
+                Выберите предмет для автоматического подбора даты.
               </p>
               <input type="hidden" id="add-hw-lesson-num" />
             </div>
+
             <div>
-              <label class="block text-xs font-medium text-zinc-400 mb-1.5"
-                >Что нужно сделать?</label
+              <label
+                class="block text-xs sm:text-sm font-bold ui-text-muted mb-1.5"
+                >Что задали?</label
               >
               <textarea
                 id="add-hw-task"
                 rows="3"
-                placeholder="Например: стр. 45, номера 3-5..."
-                class="w-full bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none"
+                placeholder="Например: стр. 45 номера 3-5, выучить правило..."
+                class="ui-surface-elevated w-full border ui-border text-sm sm:text-base rounded-2xl px-4 py-3.5 focus:outline-none resize-none font-medium leading-relaxed"
               ></textarea>
             </div>
+
             <div
               id="add-hw-success"
-              class="hidden bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm px-4 py-3 rounded-lg"
+              class="smooth-banner banner-hidden p-3.5 rounded-2xl bg-emerald-500/20 text-emerald-400 font-bold text-sm text-center flex items-center justify-center gap-2"
             >
-              ✅ Задание добавлено!
-            </div>
-            <div class="flex justify-end mt-2">
-              <button
-                onclick="saveSmartHW()"
-                class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-6 py-2.5 rounded-lg transition shadow-lg shadow-indigo-600/20 w-full sm:w-auto"
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
               >
-                Добавить в планер
-              </button>
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <span>Задание успешно добавлено в планер!</span>
             </div>
+
+            <button
+              onclick="saveSmartHW()"
+              class="mt-2 w-full py-4 ui-accent-bg text-white text-base font-bold rounded-2xl transition shadow-lg active:scale-98 flex items-center justify-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
+              >
+                <line x1="12" x2="12" y1="5" y2="19" />
+                <line x1="5" x2="19" y1="12" y2="12" />
+              </svg>
+              <span>Добавить в планер</span>
+            </button>
           </div>
         </div>
       </section>
 
       <!-- TAB 3: ВСЯ НЕДЕЛЯ -->
-      <section id="tab-full-week" class="tab-content hidden flex-col gap-5">
-        <div
-          class="bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80 flex items-center justify-between"
-        >
-          <h3 class="text-base font-semibold text-zinc-100">
-            Расписание на всю неделю
-          </h3>
-        </div>
+      <section id="tab-full-week" class="tab-content hidden flex-col gap-4">
         <div
           id="full-week-container"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          class="grid grid-cols-1 md:grid-cols-3 gap-5"
         >
-          <div class="text-center py-12 text-zinc-500 text-sm col-span-full">
-            Загрузка данных...
+          <div
+            class="text-center py-16 ui-text-muted font-medium text-sm col-span-full"
+          >
+            Загрузка...
           </div>
         </div>
       </section>
 
-      <!-- TAB 4: РЕДАКТОР РАСПИСАНИЯ -->
-      <section id="tab-schedule" class="tab-content hidden flex-col gap-5">
-        <div
-          class="flex flex-wrap gap-1.5 bg-zinc-900/60 p-1.5 rounded-xl border border-zinc-800/80"
-        >
+      <!-- TAB 4: РАСПИСАНИЕ -->
+      <section id="tab-schedule" class="tab-content hidden flex-col gap-4">
+        <div class="flex p-1.5 ui-surface rounded-2xl gap-1.5">
           <button
             onclick="selectScheduleDay(1)"
-            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Пн
           </button>
           <button
             onclick="selectScheduleDay(2)"
-            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Вт
           </button>
           <button
             onclick="selectScheduleDay(3)"
-            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Ср
           </button>
           <button
             onclick="selectScheduleDay(4)"
-            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Чт
           </button>
           <button
             onclick="selectScheduleDay(5)"
-            class="day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition"
+            class="day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 active:scale-95 transition"
           >
             Пт
           </button>
         </div>
+
         <form
           id="schedule-form"
           onsubmit="saveSchedule(event)"
-          class="bg-zinc-900/60 p-5 rounded-xl border border-zinc-800/80 flex flex-col gap-4"
+          class="ui-surface p-5 sm:p-7 rounded-3xl flex flex-col gap-4 shadow-sm"
         >
-          <h3
-            id="selected-day-heading"
-            class="text-base font-semibold text-zinc-200"
-          >
-            Расписание на День
-          </h3>
           <div
-            id="schedule-inputs-container"
-            class="grid grid-cols-1 md:grid-cols-2 gap-3"
-          ></div>
-          <div class="flex justify-end mt-2">
-            <button
-              type="submit"
-              class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition shadow-lg shadow-indigo-600/20"
+            class="flex justify-between items-center border-b ui-border pb-3"
+          >
+            <h3
+              id="selected-day-heading"
+              class="text-base sm:text-lg font-extrabold ui-accent-text"
             >
-              Сохранить расписание
-            </button>
+              Понедельник
+            </h3>
+            <span class="text-xs ui-text-muted font-semibold"
+              >Базовое расписание</span
+            >
           </div>
+          <div id="schedule-inputs-container" class="space-y-2.5"></div>
+          <button
+            type="submit"
+            class="mt-2 w-full py-3.5 ui-accent-bg text-white text-sm sm:text-base font-bold rounded-2xl transition shadow-lg active:scale-98"
+          >
+            Сохранить базовое расписание
+          </button>
         </form>
       </section>
     </main>
 
+    <!-- ПОДСКАЗКА ВНИЗУ -->
+    <footer
+      class="max-w-5xl mx-auto px-4 py-3 w-full text-center text-xs ui-text-muted opacity-60"
+    >
+      <span class="hidden sm:inline">← Навигация стрелками клавиатуры →</span>
+      <span class="sm:hidden">Свайпайте влево/вправо для перехода</span>
+    </footer>
+
     <script>
-      // PWA Service Worker
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("./sw.js")
-            .catch((err) => console.log("Ошибка SW:", err));
+          navigator.serviceWorker.register("./sw.js").catch(() => {});
         });
       }
 
@@ -416,10 +1093,6 @@
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdraWt4c3d2bXF5YWthaWNyeHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNjE4NTQsImV4cCI6MjEwMzkzNzg1NH0.bDhmQVe_81vCcW8iCx5G48-G4gJo0Wki-7rWtwI0YKA";
       // ==========================================
 
-      // ==========================================
-      // БЕЗОПАСНОСТЬ (ХЕШ ПАРОЛЯ)
-      // SHA-256 хеш для пароля "2026"
-      // ==========================================
       const SECRET_HASH =
         "5b774da4484c206db22ccff4f2e69b2b4b710ee8692a2e8c8f8dfea968368ae7";
 
@@ -435,24 +1108,50 @@
         "Пятница",
         "Суббота",
       ];
+      const TABS = ["view", "add", "full-week", "schedule"];
+      const THEMES = [
+        { id: "dark", name: "Тёмная" },
+        { id: "midnight", name: "Midnight" },
+        { id: "emerald", name: "Изумруд" },
+        { id: "light", name: "Светлая" },
+      ];
 
+      let currentTab = "view";
+      let currentTheme = localStorage.getItem("app_theme") || "dark";
       let selectedDayForSchedule = 1;
       let targetTomorrowDate = null;
       let globalSchedule = [];
+      let currentDayOverrides = [];
       let fpView, fpAdd;
+      let successBannerTimer = null;
 
-      // --- ЛОГИКА АВТОРИЗАЦИИ ---
+      function applyTheme(themeId) {
+        currentTheme = themeId;
+        document.body.setAttribute("data-theme", themeId);
+        localStorage.setItem("app_theme", themeId);
+        const activeObj = THEMES.find((t) => t.id === themeId);
+        document.getElementById("theme-btn-label").textContent = activeObj
+          ? activeObj.name
+          : "Тема";
+        updateTabIndicator();
+      }
+
+      function cycleTheme() {
+        const currentIndex = THEMES.findIndex((t) => t.id === currentTheme);
+        const nextIndex = (currentIndex + 1) % THEMES.length;
+        applyTheme(THEMES[nextIndex].id);
+      }
+
       async function checkPassword(e) {
         e.preventDefault();
         const input = document.getElementById("password-input").value;
         const errorText = document.getElementById("auth-error");
+        const authBox = document.getElementById("auth-box");
 
-        // Шифруем введенный пароль алгоритмом SHA-256 для сравнения
         const encoder = new TextEncoder();
         const data = encoder.encode(input);
         const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const inputHash = hashArray
+        const inputHash = Array.from(new Uint8Array(hashBuffer))
           .map((b) => b.toString(16).padStart(2, "0"))
           .join("");
 
@@ -462,79 +1161,346 @@
         } else {
           errorText.classList.remove("hidden");
           document.getElementById("password-input").value = "";
+          authBox.classList.remove("animate-shake");
+          void authBox.offsetWidth;
+          authBox.classList.add("animate-shake");
         }
       }
 
       function unlockApp() {
         const authScreen = document.getElementById("auth-screen");
         authScreen.classList.add("opacity-0", "pointer-events-none");
-        setTimeout(() => authScreen.classList.add("hidden"), 300);
+        setTimeout(() => authScreen.classList.add("hidden"), 200);
 
-        // Инициализируем UI только после разблокировки
         initInputsForSchedule();
         initFlatpickr();
         fetchGlobalSchedule().then(() => resetToTomorrow());
 
-        // Ставим ползунок на первую вкладку при загрузке
         setTimeout(() => {
-          switchTab("view", document.getElementById("tab-btn-view"));
-        }, 100);
+          switchTab("view");
+        }, 50);
       }
 
       function logout() {
         localStorage.removeItem("planner_auth");
-        location.reload(); // Перезагружаем страницу, чтобы вернуть экран блокировки
+        location.reload();
       }
 
       window.addEventListener("DOMContentLoaded", () => {
-        // Проверка при входе
-        if (localStorage.getItem("planner_auth") === "true") {
-          unlockApp();
-        } else {
-          document.getElementById("auth-screen").classList.remove("hidden");
+        applyTheme(currentTheme);
+        if (localStorage.getItem("planner_auth") === "true") unlockApp();
+        else document.getElementById("auth-screen").classList.remove("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        const wrap = document.getElementById("custom-subject-dropdown-wrap");
+        if (wrap && !wrap.contains(e.target)) {
+          closeSubjectDropdown();
         }
       });
 
-      // --- ЛОГИКА ВКЛАДОК С ПЛАВНЫМ ПОЛЗУНКОМ ---
+      function toggleSubjectDropdown() {
+        const menu = document.getElementById("custom-subject-dropdown");
+        const chevron = document.getElementById("custom-subject-chevron");
+        if (menu.classList.contains("open")) {
+          closeSubjectDropdown();
+        } else {
+          menu.classList.add("open");
+          chevron.classList.add("flipped");
+        }
+      }
+
+      function closeSubjectDropdown() {
+        const menu = document.getElementById("custom-subject-dropdown");
+        const chevron = document.getElementById("custom-subject-chevron");
+        if (menu) menu.classList.remove("open");
+        if (chevron) chevron.classList.remove("flipped");
+      }
+
+      function selectSubject(sub) {
+        document.getElementById("add-hw-subject").value = sub;
+
+        const label = document.getElementById("selected-subject-label");
+        label.textContent = sub;
+        label.classList.remove("text-zinc-400");
+
+        const badge = document.getElementById("selected-subject-badge");
+        badge.textContent = sub.charAt(0).toUpperCase();
+        badge.classList.remove("hidden");
+        badge.classList.add("flex");
+
+        document.querySelectorAll(".subject-check-icon").forEach((icon) => {
+          if (icon.getAttribute("data-sub") === sub) {
+            icon.classList.remove("hidden");
+          } else {
+            icon.classList.add("hidden");
+          }
+        });
+
+        closeSubjectDropdown();
+        calculateSmartDate();
+      }
+
+      async function updateSubjectDropdown() {
+        const list = document.getElementById("custom-subject-list");
+        const uniqueSubjects = [
+          ...new Set(
+            globalSchedule.map((s) => s.subject.trim()).filter((s) => s !== ""),
+          ),
+        ];
+
+        if (uniqueSubjects.length === 0) {
+          list.innerHTML = `<div class="p-4 text-center text-xs ui-text-muted">Сначала заполните расписание в "Расписание"</div>`;
+          return;
+        }
+
+        const today = new Date();
+        const todayStr = getLocalDateString(today);
+        const todayJsDay = today.getDay();
+        const todayDbDay = todayJsDay === 0 ? 7 : todayJsDay;
+
+        let todayActualSubjects = [];
+        if (todayDbDay <= 5) {
+          const { data: todayOvr } = await db
+            .from("schedule_overrides")
+            .select("*")
+            .eq("override_date", todayStr);
+          for (let l = 1; l <= 9; l++) {
+            const ovr = (todayOvr || []).find((o) => o.lesson_number === l);
+            if (ovr) {
+              if (!ovr.is_cancelled && ovr.subject.trim())
+                todayActualSubjects.push(ovr.subject.trim());
+            } else {
+              const base = globalSchedule.find(
+                (s) => s.day_of_week === todayDbDay && s.lesson_number === l,
+              );
+              if (base && base.subject.trim())
+                todayActualSubjects.push(base.subject.trim());
+            }
+          }
+        }
+
+        uniqueSubjects.sort();
+        const currentSelected = document.getElementById("add-hw-subject").value;
+
+        list.innerHTML = uniqueSubjects
+          .map((sub) => {
+            const isToday = todayActualSubjects.includes(sub);
+            return `
+                    <button type="button" onclick="selectSubject('${escapeHtml(sub)}')"
+                        class="w-full flex items-center justify-between p-3 sm:p-3.5 rounded-2xl hover:bg-white/5 active:scale-[0.99] transition-all text-left">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <span class="w-9 h-9 rounded-xl ui-surface-elevated font-mono-custom text-xs sm:text-sm font-bold flex items-center justify-center border ui-border ui-accent-text flex-shrink-0">
+                                ${sub.charAt(0).toUpperCase()}
+                            </span>
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="text-sm sm:text-base font-semibold truncate">${escapeHtml(sub)}</span>
+                                ${isToday ? '<span class="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">Был сегодня</span>' : ""}
+                            </div>
+                        </div>
+                        <svg data-sub="${escapeHtml(sub)}" class="subject-check-icon w-5 h-5 ui-accent-text flex-shrink-0 ${currentSelected === sub ? "" : "hidden"}" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                    </button>
+                `;
+          })
+          .join("");
+      }
+
       function switchTab(tabId, btnElement) {
-        // Скрываем все вкладки
+        closeSubjectDropdown();
+        currentTab = tabId;
+        const btn = btnElement || document.getElementById(`tab-btn-${tabId}`);
+
         document.querySelectorAll(".tab-content").forEach((el) => {
           el.classList.add("hidden");
           el.classList.remove("flex", "animate-tab");
         });
-        // Сбрасываем цвета кнопок
-        document.querySelectorAll(".tab-button").forEach((btn) => {
-          btn.classList.remove("text-indigo-400");
-          btn.classList.add("text-zinc-400");
+        document.querySelectorAll(".tab-button").forEach((b) => {
+          b.classList.remove("ui-accent-text");
+          b.classList.add("ui-text-muted");
         });
 
-        // Показываем нужную
         const activeTab = document.getElementById(`tab-${tabId}`);
         activeTab.classList.remove("hidden");
-        activeTab.classList.add("flex");
-        requestAnimationFrame(() => activeTab.classList.add("animate-tab"));
+        activeTab.classList.add("flex", "animate-tab");
 
-        // Делаем активный текст синим
-        btnElement.classList.remove("text-zinc-400");
-        btnElement.classList.add("text-indigo-400");
+        if (btn) {
+          btn.classList.remove("ui-text-muted");
+          btn.classList.add("ui-accent-text");
+        }
 
-        // --- МАГИЯ ПОЛЗУНКА ---
-        const indicator = document.getElementById("tab-indicator");
-        indicator.style.width = `${btnElement.offsetWidth}px`;
-        indicator.style.transform = `translateX(${btnElement.offsetLeft}px)`;
+        updateTabIndicator();
 
-        // Загрузка данных вкладки
         if (tabId === "view") loadTomorrowView();
         if (tabId === "schedule") selectScheduleDay(selectedDayForSchedule);
         if (tabId === "full-week") renderFullWeek();
       }
 
-      // Вспомогательные функции дат
+      function updateTabIndicator() {
+        const btn = document.getElementById(`tab-btn-${currentTab}`);
+        const indicator = document.getElementById("tab-indicator");
+        if (btn && indicator) {
+          indicator.style.width = `${btn.offsetWidth}px`;
+          indicator.style.transform = `translate3d(${btn.offsetLeft}px, 0, 0)`;
+        }
+      }
+      window.addEventListener("resize", updateTabIndicator);
+
+      function goToNextTab() {
+        const idx = TABS.indexOf(currentTab);
+        if (idx < TABS.length - 1) switchTab(TABS[idx + 1]);
+      }
+
+      function goToPrevTab() {
+        const idx = TABS.indexOf(currentTab);
+        if (idx > 0) switchTab(TABS[idx - 1]);
+      }
+
+      let touchStartX = 0,
+        touchStartY = 0,
+        touchStartTime = 0;
+
+      document.addEventListener(
+        "touchstart",
+        (e) => {
+          if (
+            e.target.closest("#custom-subject-dropdown") ||
+            e.target.closest("#override-modal") ||
+            e.target.closest(".flatpickr-calendar") ||
+            e.target.closest("input") ||
+            e.target.closest("textarea")
+          )
+            return;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchStartTime = Date.now();
+        },
+        { passive: true },
+      );
+
+      document.addEventListener(
+        "touchend",
+        (e) => {
+          if (
+            e.target.closest("#custom-subject-dropdown") ||
+            e.target.closest("#override-modal") ||
+            e.target.closest(".flatpickr-calendar") ||
+            e.target.closest("input") ||
+            e.target.closest("textarea")
+          )
+            return;
+          if (
+            document.getElementById("auth-screen") &&
+            !document.getElementById("auth-screen").classList.contains("hidden")
+          )
+            return;
+          if (
+            !document
+              .getElementById("override-modal")
+              .classList.contains("hidden")
+          )
+            return;
+
+          const diffX = e.changedTouches[0].clientX - touchStartX;
+          const diffY = e.changedTouches[0].clientY - touchStartY;
+          const timeDiff = Date.now() - touchStartTime;
+
+          if (
+            timeDiff < 400 &&
+            Math.abs(diffX) > 40 &&
+            Math.abs(diffX) > Math.abs(diffY) * 1.5
+          ) {
+            if (diffX < 0) goToNextTab();
+            else goToPrevTab();
+          }
+        },
+        { passive: true },
+      );
+
+      window.addEventListener("keydown", (e) => {
+        const tag = document.activeElement.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        if (
+          !document
+            .getElementById("override-modal")
+            .classList.contains("hidden")
+        )
+          return;
+        if (
+          document.getElementById("auth-screen") &&
+          !document.getElementById("auth-screen").classList.contains("hidden")
+        )
+          return;
+
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          goToNextTab();
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          goToPrevTab();
+        }
+      });
+
       function getLocalDateString(dateObj) {
         const y = dateObj.getFullYear();
         const m = String(dateObj.getMonth() + 1).padStart(2, "0");
         const d = String(dateObj.getDate()).padStart(2, "0");
         return `${y}-${m}-${d}`;
+      }
+
+      function handleMonthSlide(instance) {
+        const container = instance.daysContainer;
+        if (!container) return;
+        const newIndex = instance.currentYear * 12 + instance.currentMonth;
+        const oldIndex =
+          instance._lastYearIndex !== undefined
+            ? instance._lastYearIndex
+            : newIndex;
+
+        container.classList.remove("slide-month-right", "slide-month-left");
+        void container.offsetWidth;
+
+        if (newIndex > oldIndex) {
+          container.classList.add("slide-month-right");
+        } else if (newIndex < oldIndex) {
+          container.classList.add("slide-month-left");
+        }
+        instance._lastYearIndex = newIndex;
+      }
+
+      function setupCalendarSwipe(instance) {
+        if (!instance.calendarContainer || instance._swipeAttached) return;
+        instance._swipeAttached = true;
+        let calStartX = 0,
+          calStartY = 0,
+          calStartTime = 0;
+        instance.calendarContainer.addEventListener(
+          "touchstart",
+          (e) => {
+            calStartX = e.touches[0].clientX;
+            calStartY = e.touches[0].clientY;
+            calStartTime = Date.now();
+          },
+          { passive: true },
+        );
+        instance.calendarContainer.addEventListener(
+          "touchend",
+          (e) => {
+            const diffX = e.changedTouches[0].clientX - calStartX;
+            const diffY = e.changedTouches[0].clientY - calStartY;
+            const timeDiff = Date.now() - calStartTime;
+            if (
+              timeDiff < 400 &&
+              Math.abs(diffX) > 35 &&
+              Math.abs(diffX) > Math.abs(diffY) * 1.3
+            ) {
+              if (diffX < 0) instance.changeMonth(1);
+              else instance.changeMonth(-1);
+            }
+          },
+          { passive: true },
+        );
       }
 
       function initFlatpickr() {
@@ -544,8 +1510,34 @@
           maxDate: "2027-05-31",
           disableMobile: true,
           dateFormat: "Y-m-d",
-          onChange: function (selectedDates, dateStr) {
-            if (dateStr) onDateChange(dateStr);
+          altInput: true,
+          altFormat: "d-m-Y",
+          // ВЫХОДНЫЕ СДЕЛАНЫ НЕВЫБИРАЕМЫМИ (СБ = 6, ВС = 0)
+          disable: [
+            function (date) {
+              return date.getDay() === 0 || date.getDay() === 6;
+            },
+          ],
+          onReady: function (selectedDates, dateStr, instance) {
+            instance._lastYearIndex =
+              instance.currentYear * 12 + instance.currentMonth;
+            setupCalendarSwipe(instance);
+          },
+          onOpen: function (selectedDates, dateStr, instance) {
+            instance._lastYearIndex =
+              instance.currentYear * 12 + instance.currentMonth;
+          },
+          onMonthChange: function (selectedDates, dateStr, instance) {
+            handleMonthSlide(instance);
+          },
+          onYearChange: function (selectedDates, dateStr, instance) {
+            handleMonthSlide(instance);
+          },
+          onChange: function (selectedDates) {
+            if (selectedDates.length > 0) {
+              targetTomorrowDate = selectedDates[0];
+              loadTomorrowView("none");
+            }
           },
         });
 
@@ -556,8 +1548,23 @@
           disableMobile: true,
           dateFormat: "Y-m-d",
           altInput: true,
-          altFormat: "j F Y",
+          altFormat: "d-m-Y",
           enable: [],
+          onReady: function (selectedDates, dateStr, instance) {
+            instance._lastYearIndex =
+              instance.currentYear * 12 + instance.currentMonth;
+            setupCalendarSwipe(instance);
+          },
+          onOpen: function (selectedDates, dateStr, instance) {
+            instance._lastYearIndex =
+              instance.currentYear * 12 + instance.currentMonth;
+          },
+          onMonthChange: function (selectedDates, dateStr, instance) {
+            handleMonthSlide(instance);
+          },
+          onYearChange: function (selectedDates, dateStr, instance) {
+            handleMonthSlide(instance);
+          },
           onChange: function (selectedDates) {
             if (selectedDates.length > 0) {
               let dayOfWeek =
@@ -582,29 +1589,52 @@
       async function fetchGlobalSchedule() {
         const { data } = await db.from("schedule").select("*");
         globalSchedule = data || [];
-        updateSubjectDropdown();
+        await updateSubjectDropdown();
       }
 
-      function updateSubjectDropdown() {
-        const select = document.getElementById("add-hw-subject");
-        const uniqueSubjects = [
-          ...new Set(
-            globalSchedule.map((s) => s.subject.trim()).filter((s) => s !== ""),
-          ),
-        ];
-        if (uniqueSubjects.length === 0) {
-          select.innerHTML =
-            '<option value="">Сначала заполните расписание!</option>';
-          return;
+      async function findNextDateForSubject(subjectName, startDate) {
+        let d = new Date(startDate);
+        const next14Str = getLocalDateString(
+          new Date(d.getTime() + 14 * 86400000),
+        );
+        const { data: upcomingOverrides } = await db
+          .from("schedule_overrides")
+          .select("*")
+          .gte("override_date", getLocalDateString(d))
+          .lte("override_date", next14Str);
+
+        for (let i = 1; i <= 14; i++) {
+          d.setDate(d.getDate() + 1);
+          if (d > ACADEMIC_END) break;
+
+          const curDateStr = getLocalDateString(d);
+          let dayOfWeek = d.getDay() === 0 ? 7 : d.getDay();
+          const dayOvr = (upcomingOverrides || []).filter(
+            (o) => o.override_date === curDateStr,
+          );
+
+          for (let l = 1; l <= 9; l++) {
+            const ovr = dayOvr.find((o) => o.lesson_number === l);
+            let actualSubject = "";
+
+            if (ovr) {
+              if (!ovr.is_cancelled) actualSubject = ovr.subject;
+            } else {
+              const base = globalSchedule.find(
+                (s) => s.day_of_week === dayOfWeek && s.lesson_number === l,
+              );
+              if (base) actualSubject = base.subject;
+            }
+
+            if (actualSubject.trim() === subjectName) {
+              return { date: new Date(d), lesson: l };
+            }
+          }
         }
-        select.innerHTML =
-          '<option value="" disabled selected>Выберите предмет...</option>';
-        uniqueSubjects.sort().forEach((sub) => {
-          select.innerHTML += `<option value="${sub}">${sub}</option>`;
-        });
+        return null;
       }
 
-      function calculateSmartDate() {
+      async function calculateSmartDate() {
         const subject = document.getElementById("add-hw-subject").value;
         const helper = document.getElementById("smart-date-helper");
         if (!subject) {
@@ -624,32 +1654,22 @@
 
         let d = new Date();
         if (d < ACADEMIC_START) d = new Date(ACADEMIC_START);
-        let foundDate = null;
 
-        for (let i = 1; i <= 14; i++) {
-          d.setDate(d.getDate() + 1);
-          if (d > ACADEMIC_END) break;
-          let dayOfWeek = d.getDay() === 0 ? 7 : d.getDay();
-          if (
-            globalSchedule.some(
-              (s) =>
-                s.day_of_week === dayOfWeek && s.subject.trim() === subject,
-            )
-          ) {
-            foundDate = new Date(d);
-            break;
-          }
-        }
+        const next = await findNextDateForSubject(subject, d);
 
-        if (foundDate) {
-          fpAdd.setDate(foundDate, true);
-          helper.innerHTML = `✨ Следующий урок: <b>${foundDate.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })} (${DAYS[foundDate.getDay()]})</b>`;
-          helper.className = "text-xs mt-1.5 font-medium text-emerald-400";
+        if (next) {
+          fpAdd.setDate(next.date, true);
+          document.getElementById("add-hw-lesson-num").value =
+            next.lesson || "";
+          helper.innerHTML = `Следующий урок: <b>${next.date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })} (${DAYS[next.date.getDay()]})</b>`;
+          helper.className =
+            "text-xs sm:text-sm mt-1.5 ui-accent-text font-bold";
         } else {
           fpAdd.clear();
           document.getElementById("add-hw-lesson-num").value = "";
-          helper.innerHTML = `⚠️ В ближайшие 2 недели этого урока нет. Выберите дату вручную.`;
-          helper.className = "text-xs mt-1.5 font-medium text-amber-400";
+          helper.innerHTML = `В ближайшие 2 недели урока нет. Выберите дату вручную.`;
+          helper.className =
+            "text-xs sm:text-sm mt-1.5 text-amber-500 font-bold";
         }
       }
 
@@ -660,31 +1680,61 @@
         const lessonNum = document.getElementById("add-hw-lesson-num").value;
 
         if (!subject || !dateStr || !task) return alert("Заполните все поля!");
-        const { error } = await db.from("homework").insert([
-          {
-            due_date: dateStr,
-            lesson_number: lessonNum ? parseInt(lessonNum) : null,
-            subject: subject,
-            task: task,
-          },
-        ]);
+        const { error } = await db
+          .from("homework")
+          .insert([
+            {
+              due_date: dateStr,
+              lesson_number: lessonNum ? parseInt(lessonNum) : null,
+              subject: subject,
+              task: task,
+            },
+          ]);
         if (error) alert("Ошибка: " + error.message);
         else {
-          document.getElementById("add-hw-success").classList.remove("hidden");
+          const successBox = document.getElementById("add-hw-success");
+          successBox.classList.remove("banner-hidden");
+          successBox.classList.add("banner-visible");
+
+          clearTimeout(successBannerTimer);
+          successBannerTimer = setTimeout(() => {
+            successBox.classList.remove("banner-visible");
+            successBox.classList.add("banner-hidden");
+          }, 3200);
+
           document.getElementById("add-hw-task").value = "";
-          document.getElementById("add-hw-subject").selectedIndex = 0;
+          document.getElementById("add-hw-subject").value = "";
+          document.getElementById("selected-subject-label").textContent =
+            "Выберите предмет из списка...";
+          document
+            .getElementById("selected-subject-label")
+            .classList.add("text-zinc-400");
+          document
+            .getElementById("selected-subject-badge")
+            .classList.add("hidden");
+          document
+            .querySelectorAll(".subject-check-icon")
+            .forEach((icon) => icon.classList.add("hidden"));
+
           fpAdd.clear();
           fpAdd.set("enable", []);
-          document.getElementById("smart-date-helper").innerText =
-            "Выберите предмет, чтобы найти следующий урок.";
-          document.getElementById("smart-date-helper").className =
-            "text-xs mt-1.5 font-medium text-indigo-400";
-          setTimeout(
-            () =>
-              document.getElementById("add-hw-success").classList.add("hidden"),
-            3000,
-          );
+          document.getElementById("smart-date-helper").innerHTML =
+            "Выберите предмет для автоматического подбора даты.";
         }
+      }
+
+      function shiftDay(direction) {
+        let nextDate = new Date(targetTomorrowDate);
+        nextDate.setDate(nextDate.getDate() + direction);
+        if (nextDate.getDay() === 6)
+          nextDate.setDate(nextDate.getDate() + (direction > 0 ? 2 : -1));
+        if (nextDate.getDay() === 0)
+          nextDate.setDate(nextDate.getDate() + (direction > 0 ? 1 : -2));
+        if (nextDate < ACADEMIC_START || nextDate > ACADEMIC_END) return;
+
+        targetTomorrowDate = nextDate;
+        if (fpView) fpView.setDate(nextDate, false);
+        loadTomorrowView(direction > 0 ? "right" : "left");
       }
 
       function resetToTomorrow() {
@@ -697,17 +1747,18 @@
         if (date.getTime() > ACADEMIC_END.getTime())
           date = new Date(ACADEMIC_END);
         targetTomorrowDate = date;
-        fpView.setDate(date, false);
-        loadTomorrowView();
+        if (fpView) fpView.setDate(date, false);
+        loadTomorrowView("none");
       }
 
       function onDateChange(val) {
         const [y, m, d] = val.split("-").map(Number);
         targetTomorrowDate = new Date(y, m - 1, d);
-        loadTomorrowView();
+        loadTomorrowView("none");
       }
 
-      async function loadTomorrowView() {
+      // --- РЕНДЕР ДНЯ И АВТОПЕРЕНОС ДЗ ---
+      async function loadTomorrowView(animDirection = "none") {
         if (!targetTomorrowDate) return;
         const container = document.getElementById("tomorrow-lessons-container");
         const dateStr = getLocalDateString(targetTomorrowDate);
@@ -715,64 +1766,196 @@
           targetTomorrowDate.getDay() === 0 ? 7 : targetTomorrowDate.getDay();
 
         document.getElementById("target-date-heading").textContent =
+          targetTomorrowDate.toLocaleDateString("ru-RU", { weekday: "long" });
+        document.getElementById("target-date-sub").textContent =
           targetTomorrowDate.toLocaleDateString("ru-RU", {
-            month: "long",
             day: "numeric",
-            weekday: "long",
+            month: "long",
+            year: "numeric",
           });
-        const { data: homeworkList } = await db
-          .from("homework")
-          .select("*")
-          .eq("due_date", dateStr);
-        const scheduleMap = {};
-        globalSchedule
-          .filter((s) => s.day_of_week === dbDayOfWeek)
-          .forEach((s) => {
-            scheduleMap[s.lesson_number] = s.subject;
-          });
+
+        const todayCheck = new Date();
+        todayCheck.setDate(todayCheck.getDate() + 1);
+        if (todayCheck.getDay() === 6)
+          todayCheck.setDate(todayCheck.getDate() + 2);
+        if (todayCheck.getDay() === 0)
+          todayCheck.setDate(todayCheck.getDate() + 1);
+        const isTargetTomorrow = getLocalDateString(todayCheck) === dateStr;
+        document
+          .getElementById("target-is-today-badge")
+          .classList.toggle("hidden", !isTargetTomorrow);
+
+        container.classList.remove("slide-right", "slide-left");
+        if (animDirection === "right") container.classList.add("slide-right");
+        else if (animDirection === "left")
+          container.classList.add("slide-left");
+
+        const [hwRes, ovrRes] = await Promise.all([
+          db.from("homework").select("*").eq("due_date", dateStr),
+          db
+            .from("schedule_overrides")
+            .select("*")
+            .eq("override_date", dateStr),
+        ]);
+
+        let homeworkList = hwRes.data || [];
+        currentDayOverrides = ovrRes.data || [];
 
         container.innerHTML = "";
+
+        const rescheduleBanner = document.getElementById("reschedule-banner");
+        rescheduleBanner.classList.remove("banner-visible");
+        rescheduleBanner.classList.add("banner-hidden");
+
         if (dbDayOfWeek > 5) {
-          container.innerHTML = `<div class="p-8 text-center bg-zinc-900/40 rounded-xl border border-zinc-800/60"><p class="text-zinc-400 text-sm">В выходные мы не учимся 😎</p></div>`;
+          container.innerHTML = `<div class="ui-surface p-12 rounded-3xl text-center ui-text-muted font-bold text-base">В выходные мы отдыхаем</div>`;
           return;
         }
-        if (!Object.values(scheduleMap).some((sub) => sub.trim() !== "")) {
-          container.innerHTML = `<div class="p-8 text-center bg-zinc-900/40 rounded-xl border border-zinc-800/60"><p class="text-zinc-400 text-sm">На этот день расписание не заполнено.</p></div>`;
-          return;
-        }
+
+        let dayHasLessons = false;
+        const lessonsData = [];
+        const heldSubjects = [];
 
         for (let i = 1; i <= 9; i++) {
-          const subject = scheduleMap[i] || "";
-          if (!subject) continue;
-          const hwForLesson = (homeworkList || []).filter(
-            (h) =>
-              h.lesson_number === i ||
-              (h.subject === subject && !h.lesson_number),
+          const baseItem = globalSchedule.find(
+            (s) => s.day_of_week === dbDayOfWeek && s.lesson_number === i,
           );
-          let hwHTML =
-            hwForLesson.length > 0
-              ? hwForLesson
-                  .map(
-                    (hw) => `
-                    <div class="flex items-start justify-between gap-3 bg-zinc-800/50 p-3 rounded-lg border border-zinc-700/50 mt-2">
-                        <label class="flex items-start gap-3 cursor-pointer flex-1 min-w-0">
-                            <input type="checkbox" ${hw.is_completed ? "checked" : ""} onchange="toggleHW('${hw.id}', this.checked)" class="mt-1 w-4 h-4 rounded border-zinc-700 text-indigo-600 focus:ring-indigo-500 bg-zinc-900">
-                            <span class="text-sm ${hw.is_completed ? "line-through text-zinc-500" : "text-zinc-200"} break-words leading-relaxed">${escapeHtml(hw.task)}</span>
-                        </label>
-                        <button onclick="deleteHW('${hw.id}')" class="text-zinc-500 hover:text-rose-400 text-xs px-2 py-1 transition">✕</button>
-                    </div>`,
-                  )
-                  .join("")
-              : `<p class="text-xs text-zinc-500 italic mt-2">Заданий нет</p>`;
+          const overrideItem = currentDayOverrides.find(
+            (o) => o.lesson_number === i,
+          );
 
-          container.innerHTML += `
-                    <div class="bg-zinc-900/80 rounded-xl border border-zinc-800 p-4 transition hover:border-zinc-700/80">
-                        <div class="flex items-center gap-3">
-                            <span class="w-7 h-7 rounded-md bg-zinc-800 border border-zinc-700/60 text-xs font-bold text-zinc-400 flex items-center justify-center">${i}</span>
-                            <h3 class="text-base font-semibold text-zinc-100">${escapeHtml(subject)}</h3>
-                        </div><div class="mt-2 ml-10 space-y-1">${hwHTML}</div>
-                    </div>`;
+          let subject = baseItem ? baseItem.subject : "";
+          let isCancelled = false;
+          let isOverridden = false;
+
+          if (overrideItem) {
+            isOverridden = true;
+            if (overrideItem.is_cancelled) {
+              isCancelled = true;
+              subject = overrideItem.subject || subject;
+            } else {
+              subject = overrideItem.subject;
+            }
+          }
+
+          if (subject.trim() !== "" || isCancelled) {
+            dayHasLessons = true;
+            lessonsData.push({
+              lesson_number: i,
+              subject,
+              isCancelled,
+              isOverridden,
+            });
+            if (!isCancelled && subject.trim()) {
+              heldSubjects.push(subject.trim());
+            }
+          }
         }
+
+        // АВТОПЕРЕНОС ДЗ ПРИ ОТМЕНЕ/ЗАМЕНЕ
+        const rescheduledItems = [];
+        for (const hw of homeworkList) {
+          if (!heldSubjects.includes(hw.subject.trim())) {
+            const nextLesson = await findNextDateForSubject(
+              hw.subject.trim(),
+              targetTomorrowDate,
+            );
+            if (nextLesson) {
+              const newDueStr = getLocalDateString(nextLesson.date);
+              await db
+                .from("homework")
+                .update({
+                  due_date: newDueStr,
+                  lesson_number: nextLesson.lesson,
+                })
+                .eq("id", hw.id);
+
+              const formattedTarget = nextLesson.date.toLocaleDateString(
+                "ru-RU",
+                { day: "numeric", month: "long" },
+              );
+              rescheduledItems.push(
+                `«${hw.subject}» перенесено на ${formattedTarget}`,
+              );
+            }
+          }
+        }
+
+        if (rescheduledItems.length > 0) {
+          document.getElementById("reschedule-banner-text").textContent =
+            " " + rescheduledItems.join(", ");
+          rescheduleBanner.classList.remove("banner-hidden");
+          rescheduleBanner.classList.add("banner-visible");
+
+          const { data: updatedHw } = await db
+            .from("homework")
+            .select("*")
+            .eq("due_date", dateStr);
+          homeworkList = updatedHw || [];
+        }
+
+        if (!dayHasLessons) {
+          container.innerHTML = `
+                    <div class="ui-surface p-12 rounded-3xl text-center ui-text-muted font-bold text-base flex flex-col items-center gap-3">
+                        <span>На этот день расписание пустое</span>
+                        <button onclick="openOverrideModal()" class="text-xs ui-accent-text font-bold underline hover:opacity-80 transition">Добавить уроки/замены на эту дату</button>
+                    </div>`;
+          return;
+        }
+
+        let fullHtml = "";
+        lessonsData.forEach((item) => {
+          const hwForLesson = homeworkList.filter(
+            (h) =>
+              h.lesson_number === item.lesson_number ||
+              (h.subject === item.subject && !h.lesson_number),
+          );
+
+          let hwHTML = "";
+          if (hwForLesson.length > 0) {
+            hwHTML = hwForLesson
+              .map(
+                (hw) => `
+                        <div class="flex items-start justify-between gap-3.5 ui-surface-elevated p-3.5 rounded-2xl border ui-border">
+                            <label class="flex items-start gap-3.5 cursor-pointer flex-1 min-w-0">
+                                <input type="checkbox" ${hw.is_completed ? "checked" : ""} onchange="toggleHW('${hw.id}', this.checked)" 
+                                    class="mt-1 w-5 h-5 rounded-lg border ui-border cursor-pointer accent-indigo-600">
+                                <span class="text-sm sm:text-base font-medium leading-relaxed ${hw.is_completed ? "line-through ui-text-muted opacity-60" : ""} break-words">
+                                    ${escapeHtml(hw.task)}
+                                </span>
+                            </label>
+                            <button onclick="deleteHW('${hw.id}')" class="text-zinc-500 hover:text-rose-500 p-1 rounded-lg transition-colors" title="Удалить ДЗ">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                        </div>`,
+              )
+              .join("");
+          }
+
+          let statusBadge = "";
+          if (item.isCancelled) {
+            statusBadge = `<span class="text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2.5 py-1 rounded-xl">Урок отменён</span>`;
+          } else if (item.isOverridden) {
+            statusBadge = `<span class="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl">Замена</span>`;
+          } else if (item.lesson_number >= 8) {
+            statusBadge = `<span class="text-xs font-bold text-zinc-400 bg-zinc-500/10 px-2.5 py-1 rounded-xl">Внеурочка</span>`;
+          }
+
+          fullHtml += `
+                    <div class="ui-surface p-4 sm:p-5 rounded-3xl flex flex-col gap-3 shadow-sm ${item.isCancelled ? "opacity-60" : ""}">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3.5">
+                                <span class="w-10 h-10 rounded-2xl ui-surface-elevated font-mono-custom text-sm sm:text-base font-bold flex items-center justify-center border ui-border">
+                                    ${item.lesson_number}
+                                </span>
+                                <h3 class="text-base sm:text-lg font-bold ${item.isCancelled ? "line-through" : ""}">${escapeHtml(item.subject)}</h3>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        ${hwHTML ? `<div class="space-y-2 mt-1 sm:pl-13">${hwHTML}</div>` : ""}
+                    </div>`;
+        });
+        container.innerHTML = fullHtml;
       }
 
       async function toggleHW(id, isCompleted) {
@@ -780,13 +1963,118 @@
           .from("homework")
           .update({ is_completed: isCompleted })
           .eq("id", id);
-        loadTomorrowView();
+        loadTomorrowView("none");
       }
       async function deleteHW(id) {
         await db.from("homework").delete().eq("id", id);
-        loadTomorrowView();
+        loadTomorrowView("none");
       }
 
+      // --- МОДАЛЬНОЕ ОКНО ЗАМЕН ---
+      function openOverrideModal() {
+        if (!targetTomorrowDate) return;
+        const dateStr = getLocalDateString(targetTomorrowDate);
+        const dbDayOfWeek =
+          targetTomorrowDate.getDay() === 0 ? 7 : targetTomorrowDate.getDay();
+
+        document.getElementById("override-modal-date-label").textContent =
+          `${targetTomorrowDate.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" })} (${DAYS[dbDayOfWeek]})`;
+        const list = document.getElementById("override-inputs-list");
+        list.innerHTML = "";
+
+        for (let i = 1; i <= 9; i++) {
+          const baseItem = globalSchedule.find(
+            (s) => s.day_of_week === dbDayOfWeek && s.lesson_number === i,
+          );
+          const ovrItem = currentDayOverrides.find(
+            (o) => o.lesson_number === i,
+          );
+
+          const baseSubject = baseItem ? baseItem.subject : "";
+          const currentSubject = ovrItem ? ovrItem.subject : baseSubject;
+          const isCancelled = ovrItem ? ovrItem.is_cancelled : false;
+
+          list.innerHTML += `
+                    <div class="ui-surface-elevated p-3 rounded-2xl border ui-border flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-xl ui-surface font-mono-custom text-xs font-bold flex items-center justify-center">${i}</span>
+                        <input type="text" id="ovr-input-${i}" value="${escapeHtml(currentSubject)}" placeholder="Без урока" class="flex-1 bg-transparent text-sm font-semibold focus:outline-none border-b ui-border pb-1">
+                        <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-rose-400 select-none">
+                            <input type="checkbox" id="ovr-cancel-${i}" ${isCancelled ? "checked" : ""} class="w-4 h-4 rounded accent-rose-500 cursor-pointer">
+                            <span>Отменён</span>
+                        </label>
+                    </div>
+                `;
+        }
+
+        document.getElementById("override-modal").classList.remove("hidden");
+      }
+
+      function closeOverrideModal() {
+        document.getElementById("override-modal").classList.add("hidden");
+      }
+
+      async function saveDayOverrides() {
+        const dateStr = getLocalDateString(targetTomorrowDate);
+        const dbDayOfWeek =
+          targetTomorrowDate.getDay() === 0 ? 7 : targetTomorrowDate.getDay();
+        const payloads = [];
+
+        for (let i = 1; i <= 9; i++) {
+          const baseItem = globalSchedule.find(
+            (s) => s.day_of_week === dbDayOfWeek && s.lesson_number === i,
+          );
+          const baseSubject = baseItem ? baseItem.subject.trim() : "";
+
+          const inputVal = document
+            .getElementById(`ovr-input-${i}`)
+            .value.trim();
+          const isCancelled = document.getElementById(
+            `ovr-cancel-${i}`,
+          ).checked;
+
+          if (inputVal !== baseSubject || isCancelled) {
+            payloads.push({
+              override_date: dateStr,
+              lesson_number: i,
+              subject: inputVal,
+              is_cancelled: isCancelled,
+            });
+          }
+        }
+
+        await db
+          .from("schedule_overrides")
+          .delete()
+          .eq("override_date", dateStr);
+
+        if (payloads.length > 0) {
+          const { error } = await db
+            .from("schedule_overrides")
+            .insert(payloads);
+          if (error) return alert("Ошибка: " + error.message);
+        }
+
+        closeOverrideModal();
+        loadTomorrowView("none");
+      }
+
+      async function resetDayOverrides() {
+        if (
+          !confirm(
+            "Сбросить все замены на этот день и вернуть базовое расписание?",
+          )
+        )
+          return;
+        const dateStr = getLocalDateString(targetTomorrowDate);
+        await db
+          .from("schedule_overrides")
+          .delete()
+          .eq("override_date", dateStr);
+        closeOverrideModal();
+        loadTomorrowView("none");
+      }
+
+      // --- ВСЯ НЕДЕЛЯ (3 В РЯД НА ПК, 2 ВО ВТОРОМ РЯДУ) ---
       function renderFullWeek() {
         const container = document.getElementById("full-week-container");
         container.innerHTML = "";
@@ -798,48 +2086,64 @@
             .sort((a, b) => a.lesson_number - b.lesson_number);
           if (lessonsThisDay.length > 0) hasAnyLessons = true;
 
-          let html = `<div class="bg-zinc-900/80 rounded-xl border border-zinc-800 p-4 flex flex-col h-full transition hover:border-zinc-700/80">
-                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-3 border-b border-zinc-800/60 pb-2">${DAYS[d]}</h3><div class="space-y-2 flex-1">`;
+          let html = `
+                    <div class="ui-surface p-5 sm:p-6 rounded-3xl flex flex-col gap-4 shadow-sm hover:border-indigo-500/40 transition">
+                        <div class="flex items-center justify-between border-b ui-border pb-3">
+                            <h4 class="text-base sm:text-lg font-extrabold ui-accent-text">${DAYS[d]}</h4>
+                            <span class="text-xs font-bold ui-text-muted">${lessonsThisDay.length} ур.</span>
+                        </div>
+                        <div class="space-y-3 flex-1">
+                `;
 
-          html +=
-            lessonsThisDay.length === 0
-              ? `<p class="text-xs text-zinc-500 italic">Нет уроков</p>`
-              : lessonsThisDay
-                  .map(
-                    (lesson) => `
-                    <div class="flex items-center gap-3">
-                        <span class="w-5 h-5 rounded bg-zinc-800 border border-zinc-700/60 text-[10px] font-bold text-zinc-400 flex items-center justify-center">${lesson.lesson_number}</span>
-                        <span class="text-sm text-zinc-200 line-clamp-1">${escapeHtml(lesson.subject)}</span>
-                    </div>`,
-                  )
-                  .join("");
-          container.innerHTML += html + `</div></div>`;
+          if (lessonsThisDay.length === 0) {
+            html += `<p class="text-xs ui-text-muted italic py-4 text-center">Нет уроков</p>`;
+          } else {
+            html += lessonsThisDay
+              .map(
+                (l) => `
+                        <div class="flex items-center gap-3.5 py-0.5">
+                            <span class="w-8 h-8 rounded-xl ui-surface-elevated font-mono-custom text-xs font-bold flex items-center justify-center border ui-border flex-shrink-0">${l.lesson_number}</span>
+                            <span class="text-sm sm:text-base font-semibold truncate">${escapeHtml(l.subject)}</span>
+                        </div>
+                    `,
+              )
+              .join("");
+          }
+
+          html += `</div></div>`;
+          container.innerHTML += html;
         }
         if (!hasAnyLessons)
-          container.innerHTML = `<div class="text-center py-12 text-zinc-500 text-sm col-span-full">Расписание не заполнено.</div>`;
+          container.innerHTML = `<div class="text-center py-16 ui-text-muted font-bold text-base col-span-full">Расписание пустое</div>`;
       }
 
+      // --- БАЗОВОЕ РАСПИСАНИЕ ---
       function initInputsForSchedule() {
         const container = document.getElementById("schedule-inputs-container");
         container.innerHTML = "";
         for (let i = 1; i <= 9; i++) {
-          container.innerHTML += `<div class="flex items-center gap-2">
-                    <span class="w-6 text-right text-xs font-bold text-zinc-500">${i}.</span>
-                    <input type="text" id="sched-input-${i}" placeholder="Предмет" class="w-full bg-zinc-800/80 border border-zinc-700/70 text-zinc-100 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                </div>`;
+          container.innerHTML += `
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl ui-surface-elevated font-mono-custom text-xs font-bold flex items-center justify-center border ui-border">${i}</span>
+                        <input type="text" id="sched-input-${i}" placeholder="${i >= 8 ? "Внеурочка или пусто" : "Название предмета"}" 
+                            class="ui-surface-elevated flex-1 border ui-border text-sm sm:text-base font-semibold rounded-2xl px-4 py-3 focus:outline-none text-current">
+                    </div>`;
         }
       }
 
       function selectScheduleDay(dayNum) {
         selectedDayForSchedule = dayNum;
         document.querySelectorAll(".day-tab-btn").forEach((btn, idx) => {
-          btn.className =
-            idx + 1 === dayNum
-              ? "day-tab-btn flex-1 py-2 px-3 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition"
-              : "day-tab-btn flex-1 py-2 px-3 text-xs font-medium rounded-lg text-zinc-400 hover:text-zinc-200 transition";
+          if (idx + 1 === dayNum) {
+            btn.className =
+              "day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl ui-accent-bg text-white shadow transition";
+          } else {
+            btn.className =
+              "day-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl ui-text-muted hover:opacity-100 transition";
+          }
         });
         document.getElementById("selected-day-heading").textContent =
-          `Расписание на ${DAYS[dayNum]}`;
+          DAYS[dayNum];
         for (let i = 1; i <= 9; i++)
           document.getElementById(`sched-input-${i}`).value = "";
         globalSchedule
@@ -864,7 +2168,7 @@
           .upsert(payload, { onConflict: "day_of_week,lesson_number" });
         if (error) alert("Ошибка: " + error.message);
         else {
-          alert("Сохранено!");
+          alert("Расписание успешно сохранено!");
           await fetchGlobalSchedule();
         }
       }
@@ -876,24 +2180,6 @@
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
-      }
-
-      // --- УТИЛИТА ДЛЯ ГЕНЕРАЦИИ СВОЕГО ПАРОЛЯ ---
-      // Если хочешь поменять пароль, открой этот сайт в браузере ПК,
-      // нажми F12 (Консоль) и напиши: generateMyHash("твой_новый_пароль")
-      async function generateMyHash(newPassword) {
-        const encoder = new TextEncoder();
-        const hashBuffer = await crypto.subtle.digest(
-          "SHA-256",
-          encoder.encode(newPassword),
-        );
-        const hashHex = Array.from(new Uint8Array(hashBuffer))
-          .map((b) => b.toString(16).padStart(2, "0"))
-          .join("");
-        console.log("Твой зашифрованный хеш:", hashHex);
-        console.log(
-          "Скопируй его и вставь в переменную SECRET_HASH на строке 241",
-        );
       }
     </script>
   </body>
