@@ -561,7 +561,7 @@
       </div>
     </div>
 
-    <!-- ШАПКА (КОМПАКТНАЯ) -->
+    <!-- ШАПКА -->
     <header
       class="sticky top-0 z-40 backdrop-blur-md border-b ui-border bg-opacity-80"
       style="background-color: var(--bg-base)"
@@ -726,7 +726,7 @@
       </div>
     </header>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ (КОМПАКТНЫЙ) -->
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <main
       class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 w-full flex-1 flex flex-col gap-3 select-text overflow-hidden"
     >
@@ -810,6 +810,29 @@
           </div>
 
           <div class="flex items-center justify-end gap-1.5 flex-wrap">
+            <!-- КНОПКА СКОПИРОВАТЬ ДЗ -->
+            <button
+              id="copy-hw-btn"
+              onclick="copyHomeworkText()"
+              class="text-xs font-semibold ui-surface-elevated px-3 py-1.5 rounded-lg transition hover:opacity-80 active:scale-95 flex items-center gap-1.5 ui-accent-text"
+              title="Скопировать ДЗ на этот день"
+            >
+              <svg
+                id="copy-hw-icon"
+                class="w-3.5 h-3.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path
+                  d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+                />
+              </svg>
+              <span id="copy-hw-label">Скопировать ДЗ</span>
+            </button>
+
             <button
               onclick="openOverrideModal()"
               class="text-xs font-semibold ui-surface-elevated px-3 py-1.5 rounded-lg transition hover:opacity-80 active:scale-95 flex items-center gap-1.5 ui-accent-text"
@@ -982,7 +1005,7 @@
         </div>
       </section>
 
-      <!-- TAB 3: ВСЯ НЕДЕЛЯ (КОМПАКТНАЯ СЕТКА ПО 3 В РЯД) -->
+      <!-- TAB 3: ВСЯ НЕДЕЛЯ -->
       <section id="tab-full-week" class="tab-content hidden flex-col gap-3">
         <div
           id="full-week-container"
@@ -1114,6 +1137,7 @@
       let currentDayOverrides = [];
       let fpView, fpAdd;
       let successBannerTimer = null;
+      let currentDayHomeworkText = ""; // Текст для быстрого копирования
 
       function applyTheme(themeId) {
         currentTheme = themeId;
@@ -1710,6 +1734,44 @@
         }
       }
 
+      // --- ЛОГИКА КОПИРОВАНИЯ ТЕКСТА ДЗ ---
+      async function copyHomeworkText() {
+        if (!currentDayHomeworkText) {
+          alert("На этот день нет домашнего задания!");
+          return;
+        }
+
+        const btn = document.getElementById("copy-hw-btn");
+        const label = document.getElementById("copy-hw-label");
+
+        try {
+          await navigator.clipboard.writeText(currentDayHomeworkText);
+          label.textContent = "Скопировано!";
+          btn.classList.add("text-emerald-400");
+          setTimeout(() => {
+            label.textContent = "Скопировать ДЗ";
+            btn.classList.remove("text-emerald-400");
+          }, 2000);
+        } catch (err) {
+          // Запасной вариант копирования
+          const textarea = document.createElement("textarea");
+          textarea.value = currentDayHomeworkText;
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+
+          label.textContent = "Скопировано!";
+          btn.classList.add("text-emerald-400");
+          setTimeout(() => {
+            label.textContent = "Скопировать ДЗ";
+            btn.classList.remove("text-emerald-400");
+          }, 2000);
+        }
+      }
+
       function shiftDay(direction) {
         let nextDate = new Date(targetTomorrowDate);
         nextDate.setDate(nextDate.getDate() + direction);
@@ -1744,7 +1806,7 @@
         loadTomorrowView("none");
       }
 
-      // --- РЕНДЕР ДНЯ И АВТОПЕРЕНОС ДЗ ---
+      // --- РЕНДЕР ДНЯ И ФОРМИРОВАНИЕ ТЕКСТА ДЛЯ КОПИРОВАНИЯ ---
       async function loadTomorrowView(animDirection = "none") {
         if (!targetTomorrowDate) return;
         const container = document.getElementById("tomorrow-lessons-container");
@@ -1789,6 +1851,7 @@
         currentDayOverrides = ovrRes.data || [];
 
         container.innerHTML = "";
+        currentDayHomeworkText = "";
 
         const rescheduleBanner = document.getElementById("reschedule-banner");
         rescheduleBanner.classList.remove("banner-visible");
@@ -1839,7 +1902,7 @@
           }
         }
 
-        // АВТОПЕРЕНОС ДЗ
+        // АВТОПЕРЕНОС ДЗ ПРИ ОТМЕНЕ/ЗАМЕНЕ
         const rescheduledItems = [];
         for (const hw of homeworkList) {
           if (!heldSubjects.includes(hw.subject.trim())) {
@@ -1889,6 +1952,22 @@
                     </div>`;
           return;
         }
+
+        // СБОРКА ТЕКСТА ДЛЯ БЫСТРОГО КОПИРОВАНИЯ
+        const copyLines = [];
+        lessonsData.forEach((item) => {
+          if (item.isCancelled) return;
+          const hwForLesson = homeworkList.filter(
+            (h) =>
+              h.lesson_number === item.lesson_number ||
+              (h.subject === item.subject && !h.lesson_number),
+          );
+          const tasks = hwForLesson.map((h) => h.task.trim()).filter(Boolean);
+          if (tasks.length > 0) {
+            copyLines.push(`${item.subject}: ${tasks.join("; ")}`);
+          }
+        });
+        currentDayHomeworkText = copyLines.join("\n");
 
         let fullHtml = "";
         lessonsData.forEach((item) => {
@@ -2061,7 +2140,7 @@
         loadTomorrowView("none");
       }
 
-      // --- ВСЯ НЕДЕЛЯ: КОМПАКТНЫЕ ПАНЕЛИ (ПОМЕЩАЮТСЯ БЕЗ СКРОЛЛА) ---
+      // --- ВСЯ НЕДЕЛЯ (КОМПАКТНАЯ СЕТКА ПО 3 В РЯД) ---
       function renderFullWeek() {
         const container = document.getElementById("full-week-container");
         container.innerHTML = "";
